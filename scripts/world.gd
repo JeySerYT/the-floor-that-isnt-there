@@ -51,10 +51,14 @@ const WALL_FACE_A := preload("res://assets/textures/walls/wall_face_a.png")
 const WALL_FACE_B := preload("res://assets/textures/walls/wall_face_b.png")
 const WALL_FACE_C := preload("res://assets/textures/walls/wall_face_c.png")
 
-const DOOR_DOUBLE := preload("res://assets/textures/doors/door_double.png")
+const DOOR_DOUBLE_FRAME := preload("res://assets/textures/doors/door_double_frame.png")
+const DOOR_DOUBLE_PANEL_LEFT := preload("res://assets/textures/doors/door_double_panel_left.png")
+const DOOR_DOUBLE_PANEL_RIGHT := preload("res://assets/textures/doors/door_double_panel_right.png")
 const DOOR_ELEVATOR := preload("res://assets/textures/doors/door_elevator.png")
-const DOOR_MORGUE := preload("res://assets/textures/doors/door_morgue.png")
-const DOOR_WARD := preload("res://assets/textures/doors/door_ward.png")
+const DOOR_MORGUE_FRAME := preload("res://assets/textures/doors/door_morgue_frame.png")
+const DOOR_MORGUE_PANEL := preload("res://assets/textures/doors/door_morgue_panel.png")
+const DOOR_WARD_FRAME := preload("res://assets/textures/doors/door_ward_frame.png")
+const DOOR_WARD_PANEL := preload("res://assets/textures/doors/door_ward_panel.png")
 
 const PROP_RECEPTION_DESK := preload("res://assets/textures/furniture/prop_reception_desk.png")
 const PROP_FILING_CABINET := preload("res://assets/textures/furniture/prop_filing_cabinet.png")
@@ -108,12 +112,18 @@ const LIFT_FLOORS := [
 ]
 
 const DOORS := [
-	{"rect": Rect2(288, 320, 64, 32), "texture": DOOR_WARD},
-	{"rect": Rect2(768, 320, 64, 32), "texture": DOOR_WARD},
-	{"rect": Rect2(1184, 320, 64, 32), "texture": DOOR_DOUBLE},
-	{"rect": Rect2(288, 512, 64, 32), "texture": DOOR_WARD},
-	{"rect": Rect2(768, 512, 64, 32), "texture": DOOR_MORGUE},
-	{"rect": Rect2(1184, 512, 64, 32), "texture": DOOR_WARD},
+	{"rect": Rect2(288, 320, 64, 32), "frame": DOOR_WARD_FRAME,
+		"panels": [DOOR_WARD_PANEL], "label": "ПРИЁМНОЕ"},
+	{"rect": Rect2(768, 320, 64, 32), "frame": DOOR_WARD_FRAME,
+		"panels": [DOOR_WARD_PANEL], "label": "ЩИТОВАЯ"},
+	{"rect": Rect2(1184, 320, 64, 32), "frame": DOOR_DOUBLE_FRAME,
+		"panels": [DOOR_DOUBLE_PANEL_LEFT, DOOR_DOUBLE_PANEL_RIGHT], "label": "ПАЛАТА 13"},
+	{"rect": Rect2(288, 512, 64, 32), "frame": DOOR_WARD_FRAME,
+		"panels": [DOOR_WARD_PANEL], "label": "ХОЛЛ"},
+	{"rect": Rect2(768, 512, 64, 32), "frame": DOOR_MORGUE_FRAME,
+		"panels": [DOOR_MORGUE_PANEL], "label": "МОРГ"},
+	{"rect": Rect2(1184, 512, 64, 32), "frame": DOOR_WARD_FRAME,
+		"panels": [DOOR_WARD_PANEL], "label": "ЛИФТ"},
 ]
 
 const PROPS := [
@@ -325,12 +335,43 @@ func _build_doors() -> void:
 	add_child(body)
 	for door: Dictionary in DOORS:
 		var rect: Rect2 = door["rect"]
-		var sprite := Sprite2D.new()
-		sprite.name = "Door"
-		sprite.texture = door["texture"]
-		sprite.position = Vector2(rect.position.x, rect.end.y)
-		sprite.offset = Vector2(rect.size.x * 0.5, -rect.size.y * 0.5)
-		add_child(sprite)
+		var frame := Sprite2D.new()
+		frame.name = "DoorFrame"
+		frame.texture = door["frame"]
+		frame.centered = false
+		frame.position = rect.position
+		add_child(frame)
+
+		var opening := Control.new()
+		opening.name = "DoorOpening"
+		opening.position = rect.position + Vector2(3, 3)
+		opening.size = rect.size - Vector2(6, 6)
+		opening.clip_contents = true
+		opening.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(opening)
+
+		var panels: Array = door["panels"]
+		var panel_entries: Array[Dictionary] = []
+		var cursor := 0.0
+		for index in panels.size():
+			var texture: Texture2D = panels[index]
+			var width := texture.get_size().x
+			var panel := Sprite2D.new()
+			panel.name = "Panel"
+			panel.texture = texture
+			panel.centered = false
+			panel.position = Vector2(cursor, 0)
+			opening.add_child(panel)
+			var open_x := cursor - width
+			if panels.size() > 1 and index == panels.size() - 1:
+				open_x = cursor + width
+			panel_entries.append({
+				"sprite": panel,
+				"closed_x": cursor,
+				"open_x": open_x,
+			})
+			cursor += width
+
 		var shape := RectangleShape2D.new()
 		shape.size = rect.size
 		var collision := CollisionShape2D.new()
@@ -338,7 +379,7 @@ func _build_doors() -> void:
 		collision.position = rect.get_center()
 		body.add_child(collision)
 		_doors.append({
-			"sprite": sprite,
+			"panels": panel_entries,
 			"collision": collision,
 			"center": rect.get_center(),
 			"open": false,
@@ -374,10 +415,14 @@ func _update_doors() -> void:
 		var previous: Variant = door["tween"]
 		if previous is Tween and (previous as Tween).is_valid():
 			(previous as Tween).kill()
-		var sprite: Sprite2D = door["sprite"]
 		var tween := create_tween()
-		tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		tween.tween_property(sprite, "scale:x", 0.08 if should_open else 1.0, 0.2)
+		tween.set_parallel(true)
+		tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+		var panels: Array = door["panels"]
+		for entry: Dictionary in panels:
+			var panel: Sprite2D = entry["sprite"]
+			tween.tween_property(panel, "position:x",
+				entry["open_x"] if should_open else entry["closed_x"], 0.32)
 		door["tween"] = tween
 
 
@@ -511,9 +556,9 @@ func _spawn_enemy() -> void:
 		return
 	enemy = Stalker.new()
 	enemy.name = "TheNurse"
-	enemy.activate(Vector2(1300, 444))
 	enemy.caught_player.connect(_on_enemy_caught)
 	add_child(enemy)
+	enemy.activate(Vector2(420, 436))
 	if is_instance_valid(_player):
 		enemy.set_physics_process(true)
 
@@ -603,6 +648,7 @@ func _draw() -> void:
 	_draw_decals()
 	_draw_prop_shadows()
 	_draw_labels()
+	_draw_door_labels()
 	_draw_blood_text()
 
 
@@ -672,6 +718,20 @@ func _draw_labels() -> void:
 			Color(0.47, 0.51, 0.53, 0.78))
 		draw_rect(Rect2(pos.x, pos.y + 6, maxf(title.length() * 8.0, 36.0), 2),
 			Color(0.32, 0.12, 0.12, 0.6))
+
+
+func _draw_door_labels() -> void:
+	var font := ThemeDB.fallback_font
+	for door: Dictionary in DOORS:
+		var rect: Rect2 = door["rect"]
+		var text: String = door["label"]
+		var text_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8)
+		var width := maxf(text_size.x + 10.0, 28.0)
+		var pos := Vector2(rect.get_center().x - width * 0.5, rect.end.y + 1)
+		draw_rect(Rect2(pos, Vector2(width, 11)), Color(0.055, 0.07, 0.07, 0.88))
+		draw_rect(Rect2(pos, Vector2(width, 11)), Color(0.28, 0.32, 0.3, 0.9), false, 1.0)
+		draw_string(font, pos + Vector2(5, 8), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8,
+			Color(0.62, 0.64, 0.58, 0.92))
 
 
 func _draw_blood_text() -> void:

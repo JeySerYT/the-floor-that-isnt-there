@@ -599,6 +599,44 @@ def door_leaf(width: int, height: int, seed: int, kind: str) -> np.ndarray:
     return arr
 
 
+def door_frame(width: int, height: int, seed: int, kind: str) -> np.ndarray:
+    """Static doorway behind the moving leaf: dark threshold and steel jambs."""
+    rng = random.Random(seed)
+    arr = blank(width, height, (0, 0, 0, 0))
+    frame = (34, 40, 40) if kind != "morgue" else (29, 33, 35)
+
+    draw_rect(arr, 0, 0, width, height, frame)
+    draw_line(arr, 0, 0, width - 1, 0, (104, 112, 106), 140)
+    draw_rect(arr, 3, 3, width - 6, height - 6, (7, 9, 10))
+    for y in range(3, height - 3):
+        t = (y - 3) / max(1, height - 4)
+        shade = mix((11, 14, 15), (5, 7, 8), t)
+        draw_rect(arr, 3, y, width - 6, 1, shade)
+    # cold light from the ward above, faint floor sheen at the threshold
+    draw_rect(arr, 4, 4, width - 8, 2, (22, 27, 28), 120)
+    draw_rect(arr, 3, height - 7, width - 6, 4, (22, 27, 28), 255)
+    draw_rect(arr, 3, height - 4, width - 6, 1, (14, 18, 19), 255)
+    draw_line(arr, 3, 3, 3, height - 4, (8, 10, 11), 220)
+    draw_line(arr, width - 4, 3, width - 4, height - 4, (8, 10, 11), 220)
+    draw_line(arr, 3, 3, width - 4, 3, (16, 20, 21), 220)
+    # worn paint and rust on the jambs
+    for _ in range(3):
+        x = rng.choice((0, 1, width - 2))
+        y = rng.randrange(1, height - 4)
+        draw_rect(arr, x, y, 1, rng.randint(1, 3), RUST_DARK, 160)
+    return arr
+
+
+def door_panel(seed: int, kind: str, side: str = "") -> np.ndarray:
+    """Moving leaf cropped out of the flat door art, with a transparent margin."""
+    full = door_leaf(64, 32, seed, kind)
+    if kind == "double":
+        if side == "left":
+            return full[3:29, 3:32]
+        return full[3:29, 32:61]
+    return full[3:29, 3:61]
+
+
 def elevator_door(width: int, height: int, seed: int) -> np.ndarray:
     rng = random.Random(seed)
     arr = blank(width, height, (0, 0, 0, 0))
@@ -1065,6 +1103,20 @@ def build() -> None:
         ("door_morgue", door_leaf(64, 32, 302, "morgue"), "Дверь морга: сталь и заклёпки"),
         ("door_double", door_leaf(64, 32, 303, "double"), "Двустворчатая дверь с толкателями"),
         ("door_elevator", door_leaf(100, 140, 304, "elevator"), "Служебный лифт: створки"),
+        ("door_ward_frame", door_frame(64, 32, 311, "ward"),
+         "Проём палаты: тёмный порог и стальная рама"),
+        ("door_ward_panel", door_panel(301, "ward"),
+         "Створка двери палаты для анимации открытия"),
+        ("door_morgue_frame", door_frame(64, 32, 312, "morgue"),
+         "Проём морга: тёмный порог и стальная рама"),
+        ("door_morgue_panel", door_panel(302, "morgue"),
+         "Створка двери морга для анимации открытия"),
+        ("door_double_frame", door_frame(64, 32, 313, "double"),
+         "Проём двустворчатой двери: тёмный порог и рама"),
+        ("door_double_panel_left", door_panel(303, "double", "left"),
+         "Левая створка двустворчатой двери"),
+        ("door_double_panel_right", door_panel(303, "double", "right"),
+         "Правая створка двустворчатой двери"),
     ]
     for name, arr, description in doors:
         save(name, arr, "doors", description)

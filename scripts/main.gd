@@ -510,7 +510,7 @@ func _on_player_caught() -> void:
 		return
 	AudioManager.play_sfx("stinger", -1.0, 0.0)
 	ui.play_caught_effect()
-	ui.show_toast("Ты приходишь в себя у входа. Она всё ещё здесь.")
+	ui.show_toast("Ты приходишь в себя. Где-то рядом — её шаги.")
 	player.respawn_at(GameState.checkpoint)
 	if is_instance_valid(world.enemy):
 		world.enemy.reset_to_home()

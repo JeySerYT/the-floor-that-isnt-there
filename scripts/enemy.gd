@@ -5,7 +5,7 @@ signal caught_player
 
 const CHASE_SPEED := 132.0
 const WANDER_SPEED := 34.0
-const SIGHT_RANGE := 380.0
+const SIGHT_RANGE := 300.0
 const NORMAL_SHEET := preload("res://assets/textures/characters/nurse_sheet.png")
 const CHASE_SHEET := preload("res://assets/textures/characters/nurse_chase_sheet.png")
 const FRAME_W := 24
@@ -14,10 +14,11 @@ const DIRECTIONS := ["down", "left", "right", "up"]
 
 var active := false
 var _player: Player
-var _home := Vector2(1300, 428)
+var _home := Vector2(420, 436)
 var _wander_target := Vector2.ZERO
 var _wander_timer := 0.0
 var _catch_cooldown := 0.0
+var _pause_timer := 0.0
 var _time := 0.0
 var _chasing := false
 var _facing_row := 0
@@ -56,7 +57,8 @@ func deactivate() -> void:
 func reset_to_home() -> void:
 	global_position = _home
 	velocity = Vector2.ZERO
-	_catch_cooldown = 2.5
+	_catch_cooldown = 3.0
+	_pause_timer = 1.2
 
 
 func _physics_process(delta: float) -> void:
@@ -64,6 +66,12 @@ func _physics_process(delta: float) -> void:
 		return
 	_time += delta
 	_catch_cooldown = maxf(_catch_cooldown - delta, 0.0)
+
+	if _pause_timer > 0.0:
+		_pause_timer = maxf(_pause_timer - delta, 0.0)
+		velocity = Vector2.ZERO
+		_play_animation()
+		return
 
 	if not is_instance_valid(_player):
 		_player = get_tree().get_first_node_in_group("player") as Player

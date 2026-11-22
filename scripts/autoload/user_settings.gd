@@ -6,7 +6,7 @@ const SETTINGS_PATH := "user://settings.json"
 const DEFAULT_VOLUME := 0.8
 const WINDOWED_SIZE := Vector2i(1280, 720)
 
-var fullscreen := false
+var fullscreen := true
 var master_volume := DEFAULT_VOLUME
 
 
@@ -17,14 +17,14 @@ func _ready() -> void:
 
 
 func load_settings(path: String = SETTINGS_PATH) -> void:
-	fullscreen = false
+	fullscreen = true
 	master_volume = DEFAULT_VOLUME
 	if not FileAccess.file_exists(path):
 		return
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if not parsed is Dictionary:
 		return
-	fullscreen = bool(parsed.get("fullscreen", false))
+	fullscreen = bool(parsed.get("fullscreen", true))
 	master_volume = clampf(float(parsed.get("master_volume", DEFAULT_VOLUME)), 0.0, 1.0)
 
 

@@ -505,101 +505,131 @@ def load(rel: str) -> Image.Image:
     return Image.open(TEX / rel).convert("RGBA")
 
 
+def label_plate(text: str, width: int, height: int) -> Image.Image:
+    arr = g.blank(width, height, (0, 0, 0, 0))
+    rect(arr, 0, 0, width, height, (29, 34, 34))
+    border(arr, 0, 0, width, height, (63, 71, 67))
+    rect(arr, 0, 0, width, 1, (98, 105, 98))
+    rect(arr, 0, height - 1, width, 1, (18, 22, 22))
+    plate = g.to_image(arr)
+    draw = ImageDraw.Draw(plate)
+    font = ImageFont.truetype(g.FONT_PATH, 7)
+    draw.text((width / 2, height / 2 + 0.5), text, font=font,
+              fill=(136, 142, 132, 255), anchor="mm")
+    return plate
+
+
+def number_plate(number: str) -> Image.Image:
+    plate = Image.new("RGBA", (24, 16), (27, 13, 13, 255))
+    draw = ImageDraw.Draw(plate)
+    draw.rectangle((0, 0, 23, 0), fill=(99, 42, 38, 255))
+    draw.rectangle((0, 15, 23, 15), fill=(16, 8, 8, 255))
+    font = ImageFont.truetype(g.FONT_PATH, 10)
+    draw.text((12, 8), number, font=font, fill=(206, 74, 62, 255), anchor="mm")
+    return plate
+
+
 def title_scene() -> Image.Image:
     import mock_props as mp
 
-    scene = Image.new("RGBA", (W, H), (10, 13, 14, 255))
+    scene = Image.new("RGBA", (W, H), (9, 12, 13, 255))
     floors = {name: load(f"floors/{name}.png") for name in (
         "floor_corridor_a", "floor_corridor_b", "floor_corridor_c",
-        "floor_corridor_stain", "floor_corridor_wet", "floor_morgue",
+        "floor_corridor_stain", "floor_corridor_wet",
     )}
     walls = {name: load(f"walls/{name}.png") for name in (
         "wall_cap", "wall_face_a", "wall_face_b", "wall_tile", "wall_pipe",
     )}
 
     rng = np.random.default_rng(4104)
-    for y in range(64, 288, 32):
+    for y in range(64, H, 32):
         for x in range(0, W, 32):
             roll = rng.random()
-            if 64 <= x < 288 and 192 <= y < 256:
-                tile = floors["floor_morgue"]
-            elif roll < 0.05:
+            if roll < 0.05:
                 tile = floors["floor_corridor_stain"]
-            elif roll < 0.09:
+            elif roll < 0.10:
                 tile = floors["floor_corridor_wet"]
-            elif roll < 0.26:
+            elif roll < 0.24:
                 tile = floors["floor_corridor_b"]
-            elif roll < 0.38:
+            elif roll < 0.36:
                 tile = floors["floor_corridor_c"]
             else:
                 tile = floors["floor_corridor_a"]
             mp.paste(scene, tile, x, y)
 
-    # plain, stained wall across the top: the logo has to read against it
     for x in range(0, W, 32):
         mp.paste(scene, walls["wall_cap"], x, 0)
         face = walls["wall_face_a"]
-        if 96 <= x < 160:
-            face = walls["wall_tile"]
-        if 448 <= x < 480:
+        if 416 <= x < 576:
             face = walls["wall_face_b"]
-        if 480 <= x < 512:
-            face = walls["wall_face_b"]
+        elif x >= 576:
+            face = walls["wall_pipe"]
         mp.paste(scene, face, x, 32)
-        mp.paste(scene, walls["wall_face_a"] if x < 288 else walls["wall_face_b"], x, 288)
-        mp.paste(scene, walls["wall_cap"], x, 320)
 
-    # the door on the right holds the only working light
-    mp.paste(scene, load("doors/door_double.png"), 480, 32)
-    # ceiling fixture: dark bracket, warm tube, a little rust
-    lamp = g.blank(32, 6, (0, 0, 0, 0))
-    rect(lamp, 0, 0, 32, 6, (34, 38, 37))
-    rect(lamp, 0, 0, 32, 1, (62, 68, 64))
-    rect(lamp, 3, 3, 26, 3, (226, 202, 150))
-    rect(lamp, 4, 4, 24, 1, (248, 236, 202))
-    rect(lamp, 0, 6, 32, 1, (26, 30, 30))
-    rect(lamp, 26, 2, 2, 3, (150, 74, 50))
-    mp.paste(scene, g.to_image(lamp), 486, 18)
-    mp.paste(scene, load("devices/prop_elevator_panel.png"), 552, 40)
-    mp.paste(scene, load("decals/decal_wall_crack.png"), 416, 36)
-    mp.paste(scene, load("decals/decal_mold.png"), 128, 38)
-    mp.paste(scene, load("decals/decal_stain.png"), 240, 44)
+    # double door, ajar: the warm gap is the only light source on the floor
+    warm = Image.new("RGBA", (8, 52), (232, 188, 122, 255))
+    scene.alpha_composite(warm, (492, 6))
+    door_frame = load("doors/door_double_frame.png").resize((128, 64), Image.NEAREST)
+    left = load("doors/door_double_panel_left.png").resize((58, 52), Image.NEAREST)
+    right = load("doors/door_double_panel_right.png").resize((58, 52), Image.NEAREST)
+    mp.paste(scene, door_frame, 432, 0)
+    mp.paste(scene, left, 435, 6)
+    mp.paste(scene, right, 499, 6)
 
-    # a morgue table on the left, and the floor between it and the door
-    mp.paste(scene, load("furniture/prop_morgue_table.png"), 48, 208)
-    mp.paste(scene, load("furniture/prop_body_bag.png"), 64, 212)
-    mp.paste(scene, load("devices/prop_wheelchair.png"), 496, 244)
-    mp.paste(scene, load("decals/decal_blood_smear.png"), 96, 256)
-    mp.paste(scene, load("decals/decal_blood_pool.png"), 40, 274)
-    mp.paste(scene, load("items/item_note.png"), 264, 250)
+    mp.paste(scene, label_plate("ПАЛАТА 13", 56, 12), 358, 40)
+    mp.paste(scene, number_plate("13"), 568, 40)
+    mp.paste(scene, load("devices/prop_elevator_panel.png"), 600, 42)
+    mp.paste(scene, load("decals/decal_wall_crack.png"), 314, 36)
+    mp.paste(scene, load("decals/decal_mold.png"), 208, 38)
+    mp.paste(scene, load("decals/decal_stain.png"), 256, 44)
 
-    # the nurse stands in the doorway, facing the camera
+    # blood runs from the gap toward the nurse's feet
+    mp.paste(scene, load("decals/decal_blood_smear.png"), 470, 58)
+    mp.paste(scene, load("decals/decal_blood_pool.png"), 508, 132)
+
+    # the nurse waits just to the right of the gap, facing the camera
     nurse = Image.open(TEX / "characters/nurse_chase_sheet.png").convert("RGBA").crop((0, 0, 24, 38))
-    shadowed = Image.new("RGBA", nurse.size, (0, 0, 0, 0))
+    nurse = nurse.resize((48, 76), Image.NEAREST)
     dim = nurse.copy()
-    rgb = np.array(dim.convert("RGB"), dtype=np.float32) * 0.55
-    dim = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+    rgb_nurse = np.array(dim.convert("RGB"), dtype=np.float32) * 0.78
+    dim = Image.fromarray(np.clip(rgb_nurse, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
     dim.putalpha(nurse.getchannel("A"))
-    scene.alpha_composite(dim, (484, 66))
+    scene.alpha_composite(dim, (512, 64))
 
-    # lighting: a dying ceiling lamp over the door, a weaker one on the left
+    # a body bag on the floor fills the dark bottom-right corner
+    mp.paste(scene, load("furniture/prop_body_bag.png"), 536, 268)
+    mp.paste(scene, load("decals/decal_blood_pool.png"), 560, 292)
+
+    # dead ceiling fixture on the far left, barely readable
+    dead = g.blank(32, 6, (0, 0, 0, 0))
+    rect(dead, 0, 0, 32, 6, (30, 34, 33))
+    rect(dead, 0, 0, 32, 1, (48, 54, 51))
+    rect(dead, 4, 3, 24, 2, (60, 65, 60))
+    rect(dead, 26, 2, 2, 3, (74, 46, 36))
+    mp.paste(scene, g.to_image(dead), 112, 12)
+
     rgb = np.array(scene.convert("RGB"), dtype=np.float32) / 255.0
     yy, xx = np.mgrid[0:H, 0:W]
-    door_lamp = np.clip(1.0 - np.sqrt((xx - 502) ** 2 + (yy - 62) ** 2) / 300.0, 0.0, 1.0) ** 1.25
-    left_lamp = np.clip(1.0 - np.sqrt((xx - 140) ** 2 + (yy - 58) ** 2) / 340.0, 0.0, 1.0) ** 1.5
-    light = np.clip(0.30 + 0.55 * door_lamp + 0.28 * left_lamp, 0.0, 1.05)
+    door_glow = np.clip(1.0 - np.sqrt((xx - 496) ** 2 + (yy - 92) ** 2) / 300.0, 0.0, 1.0) ** 1.15
+    pool = np.clip(1.0 - np.sqrt((xx - 496) ** 2 + (yy - 142) ** 2) / 150.0, 0.0, 1.0) ** 2
+    light = np.clip(0.27 + 0.86 * door_glow, 0.0, 1.16)
     rgb *= light[:, :, None]
     warm = np.array([1.0, 0.86, 0.64], dtype=np.float32)
-    weight = (np.clip(door_lamp * 0.34 + left_lamp * 0.16, 0.0, 0.5))[:, :, None]
+    weight = (np.clip(door_glow * 0.46, 0.0, 0.56))[:, :, None]
     rgb = rgb * (1.0 - weight) + rgb * warm * weight
-    # pool of light spilling from under the door onto the tiles
-    tube = np.clip(1.0 - np.sqrt((xx - 502) ** 2 + (yy - 22) ** 2) / 55.0, 0.0, 1.0) ** 2
-    rgb += np.array([1.0, 0.90, 0.72], dtype=np.float32) * (tube * 0.42)[:, :, None]
-    pool = np.clip(1.0 - np.sqrt((xx - 502) ** 2 + (yy - 292) ** 2) / 110.0, 0.0, 1.0) ** 2
-    rgb += warm * (pool * 0.18)[:, :, None]
+    # light escapes through the gap and spreads across the tiles
+    gap = np.clip(1.0 - np.sqrt((xx - 496) ** 2 + (yy - 36) ** 2) / 54.0, 0.0, 1.0) ** 2
+    rgb += np.array([1.0, 0.91, 0.74], dtype=np.float32) * (gap * 0.62)[:, :, None]
+    rgb += warm * (pool * 0.30)[:, :, None]
+    # red glow of the 13 sign
+    sign = np.clip(1.0 - np.sqrt((xx - 580) ** 2 + (yy - 48) ** 2) / 44.0, 0.0, 1.0) ** 2
+    rgb += np.array([0.62, 0.07, 0.05], dtype=np.float32) * (sign * 0.46)[:, :, None]
+    # keep the menu side dark
+    scrim = 0.22 + 0.78 * np.clip((xx - 8) / 300.0, 0.0, 1.0) ** 0.9
+    rgb *= scrim[:, :, None]
     nx = np.abs(xx - W / 2) / (W / 2)
     ny = np.abs(yy - H / 2) / (H / 2)
-    vig = np.clip(1.0 - (nx ** 2.2 + ny ** 2.2) * 0.52, 0.14, 1.0)
+    vig = np.clip(1.0 - (nx ** 2.2 + ny ** 2.2) * 0.46, 0.15, 1.0)
     rgb *= vig[:, :, None]
     rgb[:, :, 2] *= 1.07
     rgb[:, :, 0] *= 0.96

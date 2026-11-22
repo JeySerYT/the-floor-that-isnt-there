@@ -248,6 +248,156 @@
       "description": "Записка с красным штампом"
     },
     {
+      "id": "player_sheet",
+      "file": "assets/textures/characters/player_sheet.png",
+      "size": [
+        100,
+        128
+      ],
+      "category": "characters",
+      "tileable": false,
+      "batch": 3,
+      "description": "Марк: 4 направления, стойка и 4 кадра ходьбы",
+      "frames": {
+        "frame_size": [
+          20,
+          32
+        ],
+        "columns": 5,
+        "rows": 4,
+        "row_order": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "column_order": [
+          "idle",
+          "walk_1",
+          "walk_2",
+          "walk_3",
+          "walk_4"
+        ],
+        "animations": {
+          "idle": {
+            "frames": [
+              0
+            ],
+            "fps": 1.0
+          },
+          "walk": {
+            "frames": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "fps": 8.0
+          }
+        }
+      }
+    },
+    {
+      "id": "nurse_sheet",
+      "file": "assets/textures/characters/nurse_sheet.png",
+      "size": [
+        120,
+        152
+      ],
+      "category": "characters",
+      "tileable": false,
+      "batch": 3,
+      "description": "Медсестра: 4 направления, стойка и 4 кадра ходьбы",
+      "frames": {
+        "frame_size": [
+          24,
+          38
+        ],
+        "columns": 5,
+        "rows": 4,
+        "row_order": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "column_order": [
+          "idle",
+          "walk_1",
+          "walk_2",
+          "walk_3",
+          "walk_4"
+        ],
+        "animations": {
+          "idle": {
+            "frames": [
+              0
+            ],
+            "fps": 1.0
+          },
+          "walk": {
+            "frames": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "fps": 8.0
+          }
+        }
+      }
+    },
+    {
+      "id": "nurse_chase_sheet",
+      "file": "assets/textures/characters/nurse_chase_sheet.png",
+      "size": [
+        120,
+        152
+      ],
+      "category": "characters",
+      "tileable": false,
+      "batch": 3,
+      "description": "Медсестра в погоне: красные глаза, кровь на руках",
+      "frames": {
+        "frame_size": [
+          24,
+          38
+        ],
+        "columns": 5,
+        "rows": 4,
+        "row_order": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "column_order": [
+          "idle",
+          "walk_1",
+          "walk_2",
+          "walk_3",
+          "walk_4"
+        ],
+        "animations": {
+          "idle": {
+            "frames": [
+              0
+            ],
+            "fps": 1.0
+          },
+          "walk": {
+            "frames": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "fps": 8.0
+          }
+        }
+      }
+    },
+    {
       "id": "floor_corridor_a",
       "file": "assets/textures/floors/floor_corridor_a.png",
       "size": [
@@ -488,6 +638,90 @@
       "description": "Служебный лифт: створки"
     },
     {
+      "id": "door_ward_frame",
+      "file": "assets/textures/doors/door_ward_frame.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Проём палаты: тёмный порог и стальная рама"
+    },
+    {
+      "id": "door_ward_panel",
+      "file": "assets/textures/doors/door_ward_panel.png",
+      "size": [
+        58,
+        26
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Створка двери палаты для анимации открытия"
+    },
+    {
+      "id": "door_morgue_frame",
+      "file": "assets/textures/doors/door_morgue_frame.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Проём морга: тёмный порог и стальная рама"
+    },
+    {
+      "id": "door_morgue_panel",
+      "file": "assets/textures/doors/door_morgue_panel.png",
+      "size": [
+        58,
+        26
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Створка двери морга для анимации открытия"
+    },
+    {
+      "id": "door_double_frame",
+      "file": "assets/textures/doors/door_double_frame.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Проём двустворчатой двери: тёмный порог и рама"
+    },
+    {
+      "id": "door_double_panel_left",
+      "file": "assets/textures/doors/door_double_panel_left.png",
+      "size": [
+        29,
+        26
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Левая створка двустворчатой двери"
+    },
+    {
+      "id": "door_double_panel_right",
+      "file": "assets/textures/doors/door_double_panel_right.png",
+      "size": [
+        29,
+        26
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Правая створка двустворчатой двери"
+    },
+    {
       "id": "decal_blood_pool",
       "file": "assets/textures/decals/decal_blood_pool.png",
       "size": [
@@ -570,156 +804,6 @@
       "tileable": false,
       "batch": 1,
       "description": "Длинная трещина стены"
-    },
-    {
-      "id": "player_sheet",
-      "file": "assets/textures/characters/player_sheet.png",
-      "size": [
-        100,
-        128
-      ],
-      "category": "characters",
-      "tileable": false,
-      "batch": 3,
-      "description": "Марк: 4 направления, стойка и 4 кадра ходьбы",
-      "frames": {
-        "frame_size": [
-          20,
-          32
-        ],
-        "columns": 5,
-        "rows": 4,
-        "row_order": [
-          "down",
-          "left",
-          "right",
-          "up"
-        ],
-        "column_order": [
-          "idle",
-          "walk_1",
-          "walk_2",
-          "walk_3",
-          "walk_4"
-        ],
-        "animations": {
-          "idle": {
-            "frames": [
-              0
-            ],
-            "fps": 1.0
-          },
-          "walk": {
-            "frames": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "fps": 8.0
-          }
-        }
-      }
-    },
-    {
-      "id": "nurse_sheet",
-      "file": "assets/textures/characters/nurse_sheet.png",
-      "size": [
-        120,
-        152
-      ],
-      "category": "characters",
-      "tileable": false,
-      "batch": 3,
-      "description": "Медсестра: 4 направления, стойка и 4 кадра ходьбы",
-      "frames": {
-        "frame_size": [
-          24,
-          38
-        ],
-        "columns": 5,
-        "rows": 4,
-        "row_order": [
-          "down",
-          "left",
-          "right",
-          "up"
-        ],
-        "column_order": [
-          "idle",
-          "walk_1",
-          "walk_2",
-          "walk_3",
-          "walk_4"
-        ],
-        "animations": {
-          "idle": {
-            "frames": [
-              0
-            ],
-            "fps": 1.0
-          },
-          "walk": {
-            "frames": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "fps": 8.0
-          }
-        }
-      }
-    },
-    {
-      "id": "nurse_chase_sheet",
-      "file": "assets/textures/characters/nurse_chase_sheet.png",
-      "size": [
-        120,
-        152
-      ],
-      "category": "characters",
-      "tileable": false,
-      "batch": 3,
-      "description": "Медсестра в погоне: красные глаза, кровь на руках",
-      "frames": {
-        "frame_size": [
-          24,
-          38
-        ],
-        "columns": 5,
-        "rows": 4,
-        "row_order": [
-          "down",
-          "left",
-          "right",
-          "up"
-        ],
-        "column_order": [
-          "idle",
-          "walk_1",
-          "walk_2",
-          "walk_3",
-          "walk_4"
-        ],
-        "animations": {
-          "idle": {
-            "frames": [
-              0
-            ],
-            "fps": 1.0
-          },
-          "walk": {
-            "frames": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "fps": 8.0
-          }
-        }
-      }
     },
     {
       "id": "ui_panel",
