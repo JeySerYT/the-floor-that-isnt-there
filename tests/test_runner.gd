@@ -13,6 +13,7 @@ func _initialize() -> void:
 	test_v1_checkpoint_migration()
 	test_v2_objective_migration()
 	test_user_settings_round_trip()
+	test_light_and_noise_rules()
 	test_manifest_assets_exist()
 	print("Results: %d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)
@@ -159,6 +160,23 @@ func test_user_settings_round_trip() -> void:
 	assert_true(not FileAccess.file_exists(path), "settings_deleted")
 	settings.free()
 	loaded.free()
+
+
+func test_light_and_noise_rules() -> void:
+	var player_script: Script = load("res://scripts/player.gd")
+	var enemy_script: Script = load("res://scripts/enemy.gd")
+	assert_true(is_equal_approx(float(player_script.call("speed_for", false)), 168.0),
+		"walk_speed")
+	assert_true(is_equal_approx(float(player_script.call("speed_for", true)), 100.8),
+		"sneak_speed")
+	assert_true(is_equal_approx(float(player_script.call("noise_radius_for", false)), 170.0),
+		"walk_noise")
+	assert_true(is_equal_approx(float(player_script.call("noise_radius_for", true)), 60.0),
+		"sneak_noise")
+	assert_true(is_equal_approx(float(enemy_script.call("sight_range_for", true)), 300.0),
+		"sight_light")
+	assert_true(is_equal_approx(float(enemy_script.call("sight_range_for", false)), 80.0),
+		"sight_dark")
 
 
 func test_manifest_assets_exist() -> void:

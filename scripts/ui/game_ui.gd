@@ -54,6 +54,8 @@ var _caught_flash: ColorRect
 var _toast_tween: Tween
 var _objective_panel: PanelContainer
 var _inventory_panel: PanelContainer
+var _status_label: Label
+var _status_text := ""
 var _settings: Control
 var _settings_return := "menu"
 var _fullscreen_button: Button
@@ -176,6 +178,22 @@ func set_prompt(text: String) -> void:
 		return
 	_prompt_panel.visible = true
 	_prompt_label.text = "[E]  " + text
+
+
+func set_status(flashlight_on: bool, sneaking: bool, hiding: bool) -> void:
+	if _status_label == null:
+		return
+	var parts: Array[String] = []
+	if hiding:
+		parts.append("В УКРЫТИИ")
+	else:
+		parts.append("ФОНАРЬ: %s" % ("ВКЛ" if flashlight_on else "ВЫКЛ"))
+		parts.append("ШАГ: %s" % ("ТИХИЙ" if sneaking else "ОБЫЧНЫЙ"))
+	var text := "   ".join(parts)
+	if text == _status_text:
+		return
+	_status_text = text
+	_status_label.text = text
 
 
 func show_toast(text: String) -> void:
@@ -325,6 +343,20 @@ func _build_game_hud() -> void:
 	_add_inventory_slot(slots, "fuse", ICON_FUSE)
 	_add_inventory_slot(slots, "lift_key", ICON_KEY)
 	_add_inventory_slot(slots, "note", ICON_NOTE)
+
+	var status_panel := _make_panel("panel")
+	status_panel.name = "StatusPanel"
+	status_panel.anchor_top = 1.0
+	status_panel.anchor_bottom = 1.0
+	status_panel.offset_left = 12
+	status_panel.offset_right = 200
+	status_panel.offset_top = -34
+	status_panel.offset_bottom = -12
+	status_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_game.add_child(status_panel)
+	_status_label = _label("", 9, Color(0.68, 0.7, 0.64))
+	_status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	status_panel.add_child(_status_label)
 
 	_prompt_panel = _make_panel("panel")
 	_prompt_panel.name = "Prompt"

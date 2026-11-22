@@ -7,6 +7,7 @@ const COLORS := {
 	"device": Color(0.64, 0.2, 0.2),
 	"window": Color(0.55, 0.68, 0.72),
 	"elevator": Color(0.72, 0.72, 0.7),
+	"cover": Color(0.5, 0.62, 0.5),
 }
 
 var interaction_id := ""

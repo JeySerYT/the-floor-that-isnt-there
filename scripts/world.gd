@@ -234,6 +234,7 @@ var power_on := false
 var interactions: Array[Interaction] = []
 var enemy: Stalker
 var _player: Player
+var _darkness: Darkness
 var _flicker_lights: Array[PointLight2D] = []
 var _stains: Array[Dictionary] = []
 var _doors: Array[Dictionary] = []
@@ -255,6 +256,7 @@ func _ready() -> void:
 	_build_items()
 	_build_interactions()
 	_build_fog()
+	_build_darkness()
 	if power_on:
 		_add_power_lights()
 		_spawn_enemy()
@@ -274,12 +276,40 @@ func _process(delta: float) -> void:
 	_mark_current_room()
 	if is_instance_valid(enemy) and is_instance_valid(_player):
 		var distance := enemy.global_position.distance_to(_player.global_position)
-		AudioManager.set_tension(clampf(1.0 - distance / 480.0, 0.0, 1.0))
+		var tension := clampf(1.0 - distance / 480.0, 0.0, 1.0)
+		if enemy.is_chasing():
+			tension = 1.0
+		elif enemy.is_searching():
+			tension = maxf(tension, 0.6)
+		AudioManager.set_tension(tension)
 
 
 func set_player(player: Player) -> void:
 	_player = player
+	if not player.noise_made.is_connected(_on_player_noise):
+		player.noise_made.connect(_on_player_noise)
+	if not player.flashlight_changed.is_connected(_on_flashlight_changed):
+		player.flashlight_changed.connect(_on_flashlight_changed)
+	if _darkness != null:
+		_darkness.bind(player)
+	_on_flashlight_changed(player.flashlight_on)
 	_mark_current_room()
+
+
+func _on_player_noise(position: Vector2, radius: float) -> void:
+	emit_noise(position, radius)
+
+
+func _on_flashlight_changed(on: bool) -> void:
+	if _darkness != null:
+		_darkness.set_dark(not on)
+
+
+func emit_noise(position: Vector2, radius: float) -> void:
+	if not is_instance_valid(enemy) or not enemy.active:
+		return
+	if enemy.global_position.distance_to(position) <= radius:
+		enemy.hear(position)
 
 
 func set_power_on() -> void:
@@ -412,6 +442,8 @@ func _update_doors() -> void:
 		door["open"] = should_open
 		var collision: CollisionShape2D = door["collision"]
 		collision.set_deferred("disabled", should_open)
+		if should_open:
+			emit_noise(door["center"], Player.INTERACTION_NOISE)
 		var previous: Variant = door["tween"]
 		if previous is Tween and (previous as Tween).is_valid():
 			(previous as Tween).kill()
@@ -486,6 +518,12 @@ func _build_fog() -> void:
 	_fog.snap()
 
 
+func _build_darkness() -> void:
+	_darkness = Darkness.new()
+	_darkness.name = "Darkness"
+	add_child(_darkness)
+
+
 func _mark_current_room() -> void:
 	if _fog == null or not is_instance_valid(_player):
 		return
@@ -533,6 +571,8 @@ func _build_interactions() -> void:
 		_add_interaction("ward_chart", "Прочитать карту наблюдения", "note", Vector2(1400, 252))
 	_add_interaction("window", "Подойти к смотровому стеклу", "window", Vector2(1464, 104))
 	_add_interaction("elevator", "Вызвать лифт", "elevator", Vector2(1456, 764))
+	_add_interaction("cover_cabinet", "Спрятаться в шкаф", "cover", Vector2(852, 116))
+	_add_interaction("cover_bed", "Спрятаться под кровать", "cover", Vector2(1088, 228))
 
 
 func _add_interaction(id: String, prompt: String, kind: String, pos: Vector2) -> void:

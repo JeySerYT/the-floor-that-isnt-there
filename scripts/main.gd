@@ -167,6 +167,7 @@ func _process(delta: float) -> void:
 
 	_nearest = player.find_nearest_interaction()
 	ui.set_prompt(_nearest.prompt if _nearest != null else "")
+	ui.set_status(player.flashlight_on, Input.is_action_pressed("sneak"), player.hiding)
 	if _input_lock <= 0.0 and _nearest != null and Input.is_action_just_pressed("interact"):
 		_interact(_nearest)
 
@@ -184,6 +185,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("pause") and ui.is_settings_open():
 		ui.close_settings()
+		get_viewport().set_input_as_handled()
+		return
+	if state == "playing" and event.is_action_pressed("flashlight"):
+		_toggle_flashlight()
 		get_viewport().set_input_as_handled()
 		return
 	if state == "playing" and event.is_action_pressed("pause"):
@@ -209,6 +214,8 @@ func _setup_input() -> void:
 		"interact": [KEY_E],
 		"pause": [KEY_ESCAPE],
 		"fullscreen": [KEY_F11],
+		"flashlight": [KEY_F],
+		"sneak": [KEY_SHIFT],
 	}
 	for action_name: String in bindings:
 		if not InputMap.has_action(action_name):
@@ -252,6 +259,7 @@ func _begin_session() -> void:
 	ui.set_objective(GameState.objective)
 	ui.set_inventory(GameState.inventory)
 	ui.set_prompt("")
+	ui.set_status(true, false, false)
 	state = "playing"
 	AudioManager.play_ambient("hospital")
 
@@ -323,6 +331,8 @@ func _on_quit() -> void:
 
 
 func _interact(target: Interaction) -> void:
+	if is_instance_valid(world):
+		world.emit_noise(player.global_position, Player.INTERACTION_NOISE)
 	match target.interaction_id:
 		"lobby_note":
 			target.enabled = false
@@ -365,6 +375,45 @@ func _interact(target: Interaction) -> void:
 			_try_window()
 		"elevator":
 			_try_elevator()
+		"cover_cabinet", "cover_bed":
+			_toggle_cover(target)
+
+
+func _toggle_cover(target: Interaction) -> void:
+	if not is_instance_valid(player):
+		return
+	if player.hiding:
+		player.exit_cover()
+		target.prompt = _cover_enter_prompt(target.interaction_id)
+		ui.set_prompt(target.prompt)
+		ui.set_status(player.flashlight_on, Input.is_action_pressed("sneak"), false)
+		AudioManager.play_sfx("interact", -12.0)
+		return
+	var seen := false
+	if is_instance_valid(world) and is_instance_valid(world.enemy) and world.enemy.active:
+		seen = world.enemy.can_see_player()
+	player.enter_cover(target.global_position)
+	target.prompt = "Выйти из укрытия"
+	ui.set_prompt(target.prompt)
+	ui.set_status(false, Input.is_action_pressed("sneak"), true)
+	AudioManager.play_sfx("interact", -12.0)
+	if seen and is_instance_valid(world.enemy):
+		world.enemy.investigate(target.global_position, 3.0)
+		ui.show_toast("Она видела, куда ты спрятался.")
+
+
+func _cover_enter_prompt(id: String) -> String:
+	return "Спрятаться под кровать" if id == "cover_bed" else "Спрятаться в шкаф"
+
+
+func _toggle_flashlight() -> void:
+	if not is_instance_valid(player) or player.hiding:
+		return
+	player.toggle_flashlight()
+	ui.set_status(player.flashlight_on, Input.is_action_pressed("sneak"), player.hiding)
+	if not player.flashlight_on and not GameState.has_flag("flashlight_hint_seen"):
+		GameState.set_flag("flashlight_hint_seen")
+		ui.show_toast("Фонарь выключен: тебя хуже видно, но и ты видишь меньше.")
 
 
 func _collect_fuse(target: Interaction) -> void:
@@ -516,6 +565,7 @@ func _on_player_caught() -> void:
 		world.enemy.reset_to_home()
 	_nearest = null
 	ui.set_prompt("")
+	ui.set_status(player.flashlight_on, false, player.hiding)
 
 
 func _autosave() -> void:

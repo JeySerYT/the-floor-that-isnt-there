@@ -1,7 +1,14 @@
 class_name Player
 extends CharacterBody2D
 
+signal noise_made(position: Vector2, radius: float)
+signal flashlight_changed(on: bool)
+
 const SPEED := 168.0
+const SNEAK_MULT := 0.6
+const WALK_NOISE := 170.0
+const SNEAK_NOISE := 60.0
+const INTERACTION_NOISE := 240.0
 const INTERACTION_RANGE := 50.0
 const MAP_BOUNDS := Rect2(32, 32, 1472, 896)
 
@@ -13,11 +20,15 @@ const DIRECTIONS := ["down", "left", "right", "up"]
 @onready var flashlight: PointLight2D = $Flashlight
 @onready var camera: Camera2D = $Camera2D
 
+var flashlight_on := true
+var hiding := false
+
 var _sprite: AnimatedSprite2D
 var _facing := Vector2.DOWN
 var _facing_row := 0
 var _walk_time := 0.0
 var _footstep_timer := 0.0
+var _flashlight_before_hide := true
 var _focused_interaction: Interaction
 
 
@@ -37,8 +48,12 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if hiding:
+		velocity = Vector2.ZERO
+		return
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	velocity = input * SPEED
+	var sneaking := Input.is_action_pressed("sneak")
+	velocity = input * speed_for(sneaking)
 	var moving := input.length_squared() > 0.01
 	if moving:
 		_facing = input.normalized()
@@ -46,8 +61,9 @@ func _physics_process(delta: float) -> void:
 		_walk_time += delta
 		_footstep_timer -= delta
 		if _footstep_timer <= 0.0:
-			_footstep_timer = 0.34
-			AudioManager.play_sfx("step", -22.0, 0.12)
+			_footstep_timer = 0.5 if sneaking else 0.34
+			AudioManager.play_sfx("step", -30.0 if sneaking else -22.0, 0.12)
+			noise_made.emit(global_position, noise_radius_for(sneaking))
 	else:
 		_walk_time = 0.0
 		_footstep_timer = 0.0
@@ -56,6 +72,46 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	global_position.x = clampf(global_position.x, MAP_BOUNDS.position.x, MAP_BOUNDS.end.x)
 	global_position.y = clampf(global_position.y, MAP_BOUNDS.position.y, MAP_BOUNDS.end.y)
+
+
+static func speed_for(sneaking: bool) -> float:
+	return SPEED * (SNEAK_MULT if sneaking else 1.0)
+
+
+static func noise_radius_for(sneaking: bool) -> float:
+	return SNEAK_NOISE if sneaking else WALK_NOISE
+
+
+func toggle_flashlight() -> void:
+	if hiding:
+		return
+	set_flashlight(not flashlight_on)
+
+
+func set_flashlight(on: bool) -> void:
+	flashlight_on = on
+	flashlight.enabled = on
+	flashlight_changed.emit(on)
+
+
+func enter_cover(spot: Vector2) -> void:
+	if hiding:
+		return
+	hiding = true
+	velocity = Vector2.ZERO
+	global_position = spot
+	_flashlight_before_hide = flashlight_on
+	set_flashlight(false)
+	_sprite.visible = false
+	_play_animation(false)
+
+
+func exit_cover() -> void:
+	if not hiding:
+		return
+	hiding = false
+	_sprite.visible = true
+	set_flashlight(_flashlight_before_hide)
 
 
 func find_nearest_interaction() -> Interaction:
@@ -79,6 +135,8 @@ func find_nearest_interaction() -> Interaction:
 
 
 func respawn_at(pos: Vector2) -> void:
+	hiding = false
+	_sprite.visible = true
 	global_position = pos
 	velocity = Vector2.ZERO
 	camera.reset_smoothing()
