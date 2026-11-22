@@ -135,8 +135,11 @@ tests/run_all.sh
 Скрипт импортирует ресурсы и прогоняет четыре набора: юнит-проверки,
 регрессию сюжета, свет/шум и подвал. Проверяются новая игра, флаги
 и инвентарь, сохранение и загрузка, миграция сейвов v1 → v3, настройки,
-правила света и шума, полнота записок для третьего финала и наличие всех
-файлов из манифеста.
+правила света и шума, полнота записок для третьего финала, разметка
+уровня и наличие всех файлов из манифеста.
+
+Тексты и разметка уровня лежат в `data/`, а не в коде. Слои и правила
+описаны в [docs/architecture.md](docs/architecture.md).
 
 Релиз публикуется автоматически по тегу: workflow `Release` берёт заметки
 из `CHANGELOG.md` через `tools/release_notes.py` и создаёт релиз на GitHub.
@@ -169,12 +172,16 @@ nine-patch-марджины. Генераторы мержат манифест,
 ```
 .github/workflows/    CI и публикация релизов
 assets/audio/         сгенерированные WAV
+assets/branding/      иконка, логотип, social preview
 assets/textures/      тайлы, мебель, двери, декали, персонажи, UI
+data/                 тексты истории и разметка уровня
+docs/architecture.md  слои, поток данных и правила
 docs/previews/        контактные листы и макеты партий
 docs/specs/           спеки версий
 scenes/               main, world, player
 scripts/              main, world, player, enemy, interaction, darkness
 scripts/autoload/     GameState, AudioManager, UserSettings
+scripts/core/         Story, SaveData
 scripts/ui/           GameUI
 tests/                headless-тесты
 tests/scenarios/      сценарные регрессии
