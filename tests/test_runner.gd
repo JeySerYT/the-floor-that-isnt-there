@@ -19,6 +19,7 @@ func _initialize() -> void:
 	test_manifest_assets_exist()
 	test_save_data_format()
 	test_story_data()
+	test_world_layout()
 	print("Results: %d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)
 
@@ -292,3 +293,48 @@ func test_story_data() -> void:
 	assert_eq(empty.size(), 0, "story_no_empty_text: %s" % str(empty))
 	assert_true(not story_script.call("title", "intro").is_empty(), "story_title")
 	assert_true(not story_script.call("text", "intro").contains("\\n"), "story_newlines_joined")
+
+
+func test_world_layout() -> void:
+	var layout_script: Script = load("res://scripts/world_layout.gd")
+	var layout: RefCounted = layout_script.call("load_default")
+	assert_eq(layout.map_size, Vector2(1536, 1280), "layout_map_size")
+	assert_eq(layout.rooms.size(), 10, "layout_rooms")
+	assert_eq(layout.walls.size(), 24, "layout_walls")
+	assert_eq(layout.doors.size(), 9, "layout_doors")
+	assert_eq(layout.props.size(), 29, "layout_props")
+	assert_eq(layout.decals.size(), 10, "layout_decals")
+	assert_eq(layout.item_spawns.size(), 12, "layout_items")
+	assert_eq(layout.interactions.size(), 20, "layout_interactions")
+
+	var missing: Array[String] = []
+	for kind: Variant in layout.floor_sets:
+		var textures: Array = layout.floor_sets[kind]
+		if textures.is_empty():
+			missing.append("floors:%s" % str(kind))
+		for texture: Variant in textures:
+			if texture == null:
+				missing.append("floors:%s" % str(kind))
+	for door: Dictionary in layout.doors:
+		if door["frame"] == null or (door["panels"] as Array).is_empty():
+			missing.append("door:%s" % str(door["label"]))
+	for prop: Dictionary in layout.props + layout.decals + layout.item_spawns:
+		if prop["texture"] == null:
+			missing.append("texture:%s" % str(prop.get("id", prop["pos"])))
+	assert_eq(missing.size(), 0, "layout_textures_resolved: %s" % str(missing))
+
+	var ids: Dictionary = {}
+	var duplicates: Array[String] = []
+	for entry: Dictionary in layout.interactions:
+		var id := str(entry["id"])
+		if ids.has(id):
+			duplicates.append(id)
+		ids[id] = true
+	assert_eq(duplicates.size(), 0, "layout_interaction_ids_unique: %s" % str(duplicates))
+
+	var outside: Array[String] = []
+	for room: Dictionary in layout.rooms:
+		var rect: Rect2 = room["rect"]
+		if not Rect2(Vector2.ZERO, layout.map_size).encloses(rect):
+			outside.append(str(room["title"]))
+	assert_eq(outside.size(), 0, "layout_rooms_inside_map: %s" % str(outside))

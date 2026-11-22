@@ -1,0 +1,1077 @@
+{
+	"version": 1,
+	"map_size": [
+		1536,
+		1280
+	],
+	"tile": 32,
+	"elevator_rect": [
+		1400,
+		612,
+		100,
+		140
+	],
+	"floor_sets": {
+		"corridor": [
+			"res://assets/textures/floors/floor_corridor_a.png",
+			"res://assets/textures/floors/floor_corridor_a.png",
+			"res://assets/textures/floors/floor_corridor_b.png",
+			"res://assets/textures/floors/floor_corridor_c.png",
+			"res://assets/textures/floors/floor_corridor_wet.png",
+			"res://assets/textures/floors/floor_corridor_stain.png"
+		],
+		"lobby": [
+			"res://assets/textures/floors/floor_lobby.png",
+			"res://assets/textures/floors/floor_lobby.png",
+			"res://assets/textures/floors/floor_lobby.png",
+			"res://assets/textures/floors/floor_lobby.png",
+			"res://assets/textures/floors/floor_corridor_a.png"
+		],
+		"ward": [
+			"res://assets/textures/floors/floor_ward.png",
+			"res://assets/textures/floors/floor_ward.png",
+			"res://assets/textures/floors/floor_ward.png",
+			"res://assets/textures/floors/floor_ward.png",
+			"res://assets/textures/floors/floor_corridor_a.png"
+		],
+		"morgue": [
+			"res://assets/textures/floors/floor_morgue.png",
+			"res://assets/textures/floors/floor_morgue.png",
+			"res://assets/textures/floors/floor_morgue.png",
+			"res://assets/textures/floors/floor_corridor_c.png"
+		],
+		"utility": [
+			"res://assets/textures/floors/floor_grate.png",
+			"res://assets/textures/floors/floor_grate.png",
+			"res://assets/textures/floors/floor_corridor_b.png"
+		],
+		"hall": [
+			"res://assets/textures/floors/floor_lobby.png",
+			"res://assets/textures/floors/floor_lobby.png",
+			"res://assets/textures/floors/floor_lobby.png",
+			"res://assets/textures/floors/floor_corridor_b.png",
+			"res://assets/textures/floors/floor_corridor_stain.png"
+		],
+		"lift": [
+			"res://assets/textures/floors/floor_lobby.png",
+			"res://assets/textures/floors/floor_corridor_a.png",
+			"res://assets/textures/floors/floor_corridor_b.png"
+		],
+		"basement": [
+			"res://assets/textures/floors/floor_grate.png",
+			"res://assets/textures/floors/floor_corridor_c.png",
+			"res://assets/textures/floors/floor_corridor_wet.png",
+			"res://assets/textures/floors/floor_morgue.png"
+		],
+		"archive": [
+			"res://assets/textures/floors/floor_archive.png"
+		],
+		"boiler": [
+			"res://assets/textures/floors/floor_boiler.png",
+			"res://assets/textures/floors/floor_boiler.png",
+			"res://assets/textures/floors/floor_boiler.png",
+			"res://assets/textures/floors/floor_grate.png"
+		]
+	},
+	"rooms": [
+		{
+			"title": "ПРИЁМНОЕ",
+			"rect": [
+				32.0,
+				32.0,
+				608.0,
+				288.0
+			],
+			"label": [
+				56.0,
+				84.0
+			],
+			"floor": "lobby"
+		},
+		{
+			"title": "ЩИТОВАЯ",
+			"rect": [
+				672.0,
+				32.0,
+				288.0,
+				288.0
+			],
+			"label": [
+				696.0,
+				84.0
+			],
+			"floor": "utility"
+		},
+		{
+			"title": "ПАЛАТА 13",
+			"rect": [
+				992.0,
+				32.0,
+				512.0,
+				288.0
+			],
+			"label": [
+				1016.0,
+				84.0
+			],
+			"floor": "ward"
+		},
+		{
+			"title": "КОРИДОР",
+			"rect": [
+				32.0,
+				352.0,
+				1472.0,
+				160.0
+			],
+			"label": [
+				660.0,
+				388.0
+			],
+			"floor": "corridor"
+		},
+		{
+			"title": "ХОЛЛ",
+			"rect": [
+				32.0,
+				544.0,
+				608.0,
+				384.0
+			],
+			"label": [
+				56.0,
+				596.0
+			],
+			"floor": "hall"
+		},
+		{
+			"title": "МОРГ",
+			"rect": [
+				672.0,
+				544.0,
+				288.0,
+				384.0
+			],
+			"label": [
+				696.0,
+				596.0
+			],
+			"floor": "morgue"
+		},
+		{
+			"title": "ЛИФТОВОЙ ХОЛЛ",
+			"rect": [
+				992.0,
+				544.0,
+				512.0,
+				384.0
+			],
+			"label": [
+				1016.0,
+				596.0
+			],
+			"floor": "lift"
+		},
+		{
+			"title": "ПОДВАЛ",
+			"rect": [
+				32.0,
+				960.0,
+				1472.0,
+				128.0
+			],
+			"label": [
+				56.0,
+				1012.0
+			],
+			"floor": "basement"
+		},
+		{
+			"title": "АРХИВ",
+			"rect": [
+				32.0,
+				1120.0,
+				544.0,
+				128.0
+			],
+			"label": [
+				56.0,
+				1172.0
+			],
+			"floor": "archive"
+		},
+		{
+			"title": "КОТЕЛЬНАЯ",
+			"rect": [
+				608.0,
+				1120.0,
+				448.0,
+				128.0
+			],
+			"label": [
+				632.0,
+				1172.0
+			],
+			"floor": "boiler"
+		}
+	],
+	"walls": [
+		[
+			0.0,
+			0.0,
+			1536.0,
+			32.0
+		],
+		[
+			0.0,
+			1248.0,
+			1536.0,
+			32.0
+		],
+		[
+			0.0,
+			0.0,
+			32.0,
+			1280.0
+		],
+		[
+			1504.0,
+			0.0,
+			32.0,
+			1280.0
+		],
+		[
+			640.0,
+			32.0,
+			32.0,
+			288.0
+		],
+		[
+			960.0,
+			32.0,
+			32.0,
+			288.0
+		],
+		[
+			32.0,
+			320.0,
+			256.0,
+			32.0
+		],
+		[
+			352.0,
+			320.0,
+			416.0,
+			32.0
+		],
+		[
+			832.0,
+			320.0,
+			352.0,
+			32.0
+		],
+		[
+			1248.0,
+			320.0,
+			256.0,
+			32.0
+		],
+		[
+			32.0,
+			512.0,
+			256.0,
+			32.0
+		],
+		[
+			352.0,
+			512.0,
+			416.0,
+			32.0
+		],
+		[
+			832.0,
+			512.0,
+			352.0,
+			32.0
+		],
+		[
+			1248.0,
+			512.0,
+			256.0,
+			32.0
+		],
+		[
+			640.0,
+			544.0,
+			32.0,
+			384.0
+		],
+		[
+			960.0,
+			544.0,
+			32.0,
+			384.0
+		],
+		[
+			0.0,
+			928.0,
+			288.0,
+			32.0
+		],
+		[
+			352.0,
+			928.0,
+			1184.0,
+			32.0
+		],
+		[
+			32.0,
+			1088.0,
+			256.0,
+			32.0
+		],
+		[
+			352.0,
+			1088.0,
+			416.0,
+			32.0
+		],
+		[
+			832.0,
+			1088.0,
+			256.0,
+			32.0
+		],
+		[
+			1088.0,
+			1088.0,
+			416.0,
+			32.0
+		],
+		[
+			576.0,
+			1120.0,
+			32.0,
+			128.0
+		],
+		[
+			1056.0,
+			1120.0,
+			32.0,
+			128.0
+		]
+	],
+	"doors": [
+		{
+			"rect": [
+				288.0,
+				320.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_ward_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_ward_panel.png"
+			],
+			"label": "ПРИЁМНОЕ"
+		},
+		{
+			"rect": [
+				768.0,
+				320.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_ward_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_ward_panel.png"
+			],
+			"label": "ЩИТОВАЯ"
+		},
+		{
+			"rect": [
+				1184.0,
+				320.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_double_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_double_panel_left.png",
+				"res://assets/textures/doors/door_double_panel_right.png"
+			],
+			"label": "ПАЛАТА 13"
+		},
+		{
+			"rect": [
+				288.0,
+				512.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_ward_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_ward_panel.png"
+			],
+			"label": "ХОЛЛ"
+		},
+		{
+			"rect": [
+				768.0,
+				512.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_morgue_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_morgue_panel.png"
+			],
+			"label": "МОРГ"
+		},
+		{
+			"rect": [
+				1184.0,
+				512.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_ward_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_ward_panel.png"
+			],
+			"label": "ЛИФТ"
+		},
+		{
+			"rect": [
+				288.0,
+				1088.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_ward_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_ward_panel.png"
+			],
+			"label": "АРХИВ"
+		},
+		{
+			"rect": [
+				768.0,
+				1088.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_morgue_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_morgue_panel.png"
+			],
+			"label": "КОТЕЛЬНАЯ"
+		},
+		{
+			"rect": [
+				832.0,
+				1216.0,
+				64.0,
+				32.0
+			],
+			"frame": "res://assets/textures/doors/door_morgue_frame.png",
+			"panels": [
+				"res://assets/textures/doors/door_morgue_panel.png"
+			],
+			"label": "−1",
+			"auto": false,
+			"label_above": true
+		}
+	],
+	"props": [
+		{
+			"texture": "res://assets/textures/furniture/prop_reception_desk.png",
+			"pos": [
+				440.0,
+				176.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_filing_cabinet.png",
+			"pos": [
+				88.0,
+				160.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_chair.png",
+			"pos": [
+				464.0,
+				144.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_metal_cabinet.png",
+			"pos": [
+				836.0,
+				56.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/devices/prop_fusebox.png",
+			"pos": [
+				844.0,
+				166.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/devices/prop_generator.png",
+			"pos": [
+				912.0,
+				204.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_hospital_bed.png",
+			"pos": [
+				1040.0,
+				164.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_hospital_bed.png",
+			"pos": [
+				1240.0,
+				164.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/devices/prop_iv_stand.png",
+			"pos": [
+				1200.0,
+				190.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/barriers/prop_observation_window.png",
+			"pos": [
+				1432.0,
+				36.0
+			],
+			"solid": false
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_morgue_table.png",
+			"pos": [
+				704.0,
+				620.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_morgue_table.png",
+			"pos": [
+				832.0,
+				620.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_body_bag.png",
+			"pos": [
+				720.0,
+				628.0
+			],
+			"solid": false
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_body_bag.png",
+			"pos": [
+				848.0,
+				628.0
+			],
+			"solid": false
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_metal_cabinet.png",
+			"pos": [
+				832.0,
+				704.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_reception_desk.png",
+			"pos": [
+				140.0,
+				680.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_waiting_bench.png",
+			"pos": [
+				64.0,
+				640.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_waiting_bench.png",
+			"pos": [
+				64.0,
+				760.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/devices/prop_wheelchair.png",
+			"pos": [
+				360.0,
+				820.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/barriers/prop_boarded_door.png",
+			"pos": [
+				280.0,
+				896.0
+			],
+			"id": "stairs_board"
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_stairs.png",
+			"pos": [
+				288.0,
+				880.0
+			],
+			"id": "stairs_sprite",
+			"solid": false,
+			"hidden": true
+		},
+		{
+			"texture": "res://assets/textures/devices/prop_elevator_panel.png",
+			"pos": [
+				1468.0,
+				764.0
+			],
+			"solid": false
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_shelf.png",
+			"pos": [
+				96.0,
+				1216.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_shelf.png",
+			"pos": [
+				192.0,
+				1216.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_shelf.png",
+			"pos": [
+				400.0,
+				1216.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/furniture/prop_shelf.png",
+			"pos": [
+				496.0,
+				1216.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/devices/prop_boiler_tank.png",
+			"pos": [
+				616.0,
+				1140.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/devices/prop_boiler_tank.png",
+			"pos": [
+				992.0,
+				1168.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/barriers/prop_collapse.png",
+			"pos": [
+				1160.0,
+				1010.0
+			],
+			"solid": false
+		}
+	],
+	"decals": [
+		{
+			"texture": "res://assets/textures/decals/decal_wall_crack.png",
+			"pos": [
+				80.0,
+				68.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_stain.png",
+			"pos": [
+				480.0,
+				88.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_mold.png",
+			"pos": [
+				1056.0,
+				72.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_blood_smear.png",
+			"pos": [
+				592.0,
+				468.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_blood_pool.png",
+			"pos": [
+				232.0,
+				560.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_crack.png",
+			"pos": [
+				1330.0,
+				700.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_mold.png",
+			"pos": [
+				72.0,
+				1136.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_stain.png",
+			"pos": [
+				342.0,
+				1150.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_wall_crack.png",
+			"pos": [
+				622.0,
+				1140.0
+			]
+		},
+		{
+			"texture": "res://assets/textures/decals/decal_crack.png",
+			"pos": [
+				1180.0,
+				1052.0
+			]
+		}
+	],
+	"item_spawns": [
+		{
+			"texture": "res://assets/textures/items/item_note.png",
+			"pos": [
+				176.0,
+				704.0
+			],
+			"id": "lobby_note",
+			"flag": "lobby_note_read"
+		},
+		{
+			"texture": "res://assets/textures/items/item_note.png",
+			"pos": [
+				492.0,
+				270.0
+			],
+			"id": "reception_note",
+			"flag": "reception_note_read"
+		},
+		{
+			"texture": "res://assets/textures/items/item_fuse.png",
+			"pos": [
+				104.0,
+				200.0
+			],
+			"id": "fuse",
+			"flag": "fuse_taken"
+		},
+		{
+			"texture": "res://assets/textures/items/item_key.png",
+			"pos": [
+				832.0,
+				726.0
+			],
+			"id": "key",
+			"flag": "key_taken"
+		},
+		{
+			"texture": "res://assets/textures/items/item_cassette.png",
+			"pos": [
+				656.0,
+				462.0
+			],
+			"id": "tape",
+			"flag": "tape_heard"
+		},
+		{
+			"texture": "res://assets/textures/items/item_note.png",
+			"pos": [
+				1392.0,
+				244.0
+			],
+			"id": "ward_chart",
+			"flag": "ward_chart_read"
+		},
+		{
+			"texture": "res://assets/textures/items/item_note.png",
+			"pos": [
+				96.0,
+				1200.0
+			],
+			"id": "archive_note_1",
+			"flag": "archive_note_1"
+		},
+		{
+			"texture": "res://assets/textures/items/item_note.png",
+			"pos": [
+				192.0,
+				1200.0
+			],
+			"id": "archive_note_2",
+			"flag": "archive_note_2"
+		},
+		{
+			"texture": "res://assets/textures/items/item_note.png",
+			"pos": [
+				400.0,
+				1200.0
+			],
+			"id": "archive_note_3",
+			"flag": "archive_note_3"
+		},
+		{
+			"texture": "res://assets/textures/items/item_note.png",
+			"pos": [
+				1112.0,
+				1032.0
+			],
+			"id": "basement_note",
+			"flag": "basement_note"
+		},
+		{
+			"texture": "res://assets/textures/items/item_note.png",
+			"pos": [
+				896.0,
+				1200.0
+			],
+			"id": "boiler_note",
+			"flag": "boiler_note"
+		},
+		{
+			"texture": "res://assets/textures/items/item_cassette.png",
+			"pos": [
+				688.0,
+				1184.0
+			],
+			"id": "tape_second",
+			"flag": "tape_second_heard"
+		}
+	],
+	"interactions": [
+		{
+			"id": "lobby_note",
+			"prompt": "Прочитать объявление",
+			"kind": "note",
+			"pos": [
+				184.0,
+				712.0
+			],
+			"absent_flag": "intro_note_read"
+		},
+		{
+			"id": "reception_note",
+			"prompt": "Открыть журнал приёма",
+			"kind": "note",
+			"pos": [
+				500.0,
+				278.0
+			],
+			"absent_flag": "reception_note_read"
+		},
+		{
+			"id": "fuse",
+			"prompt": "Взять предохранитель",
+			"kind": "item",
+			"pos": [
+				112.0,
+				208.0
+			],
+			"absent_flag": "fuse_taken"
+		},
+		{
+			"id": "fusebox",
+			"prompt": "Осмотреть электрощит",
+			"kind": "device",
+			"pos": [
+				860.0,
+				182.0
+			]
+		},
+		{
+			"id": "morgue_key",
+			"prompt": "Взять служебный ключ",
+			"kind": "item",
+			"pos": [
+				840.0,
+				734.0
+			],
+			"absent_flag": "key_taken"
+		},
+		{
+			"id": "tape",
+			"prompt": "Прослушать запись",
+			"kind": "note",
+			"pos": [
+				664.0,
+				470.0
+			],
+			"absent_flag": "tape_heard"
+		},
+		{
+			"id": "ward_chart",
+			"prompt": "Прочитать карту наблюдения",
+			"kind": "note",
+			"pos": [
+				1400.0,
+				252.0
+			],
+			"absent_flag": "ward_chart_read"
+		},
+		{
+			"id": "window",
+			"prompt": "Подойти к смотровому стеклу",
+			"kind": "window",
+			"pos": [
+				1464.0,
+				104.0
+			]
+		},
+		{
+			"id": "elevator",
+			"prompt": "Вызвать лифт",
+			"kind": "elevator",
+			"pos": [
+				1456.0,
+				764.0
+			]
+		},
+		{
+			"id": "cover_cabinet",
+			"prompt": "Спрятаться в шкаф",
+			"kind": "cover",
+			"pos": [
+				852.0,
+				116.0
+			]
+		},
+		{
+			"id": "cover_bed",
+			"prompt": "Спрятаться под кровать",
+			"kind": "cover",
+			"pos": [
+				1088.0,
+				228.0
+			]
+		},
+		{
+			"id": "stairs_down",
+			"prompt": "Спуститься в подвал",
+			"kind": "stairs",
+			"pos": [
+				320.0,
+				910.0
+			],
+			"prompt_unpowered": "Осмотреть дверь на лестницу"
+		},
+		{
+			"id": "stairs_up",
+			"prompt": "Подняться в холл",
+			"kind": "stairs",
+			"pos": [
+				320.0,
+				1016.0
+			]
+		},
+		{
+			"id": "archive_note_1",
+			"prompt": "Прочитать опись архива",
+			"kind": "note",
+			"pos": [
+				104.0,
+				1208.0
+			],
+			"absent_flag": "archive_note_1"
+		},
+		{
+			"id": "archive_note_2",
+			"prompt": "Прочитать форму согласия",
+			"kind": "note",
+			"pos": [
+				200.0,
+				1208.0
+			],
+			"absent_flag": "archive_note_2"
+		},
+		{
+			"id": "archive_note_3",
+			"prompt": "Прочитать черновик заявления",
+			"kind": "note",
+			"pos": [
+				408.0,
+				1208.0
+			],
+			"absent_flag": "archive_note_3"
+		},
+		{
+			"id": "basement_note",
+			"prompt": "Прочитать служебную записку",
+			"kind": "note",
+			"pos": [
+				1120.0,
+				1040.0
+			],
+			"absent_flag": "basement_note"
+		},
+		{
+			"id": "boiler_note",
+			"prompt": "Прочитать журнал котельной",
+			"kind": "note",
+			"pos": [
+				904.0,
+				1208.0
+			],
+			"absent_flag": "boiler_note"
+		},
+		{
+			"id": "tape_second",
+			"prompt": "Прослушать кассету",
+			"kind": "note",
+			"pos": [
+				696.0,
+				1192.0
+			],
+			"absent_flag": "tape_second_heard"
+		},
+		{
+			"id": "boiler_door",
+			"prompt": "Дверь «−1»",
+			"kind": "stairs",
+			"pos": [
+				864.0,
+				1216.0
+			]
+		}
+	]
+}

@@ -4,222 +4,26 @@ extends Node2D
 signal caught_player
 signal room_entered(index: int)
 
-const MAP_SIZE := Vector2(1536, 1280)
-const TILE := 32
 
-const ROOMS := [
-	{"title": "ПРИЁМНОЕ", "rect": Rect2(32, 32, 608, 288), "label": Vector2(56, 84), "floor": "lobby"},
-	{"title": "ЩИТОВАЯ", "rect": Rect2(672, 32, 288, 288), "label": Vector2(696, 84), "floor": "utility"},
-	{"title": "ПАЛАТА 13", "rect": Rect2(992, 32, 512, 288), "label": Vector2(1016, 84), "floor": "ward"},
-	{"title": "КОРИДОР", "rect": Rect2(32, 352, 1472, 160), "label": Vector2(660, 388), "floor": "corridor"},
-	{"title": "ХОЛЛ", "rect": Rect2(32, 544, 608, 384), "label": Vector2(56, 596), "floor": "hall"},
-	{"title": "МОРГ", "rect": Rect2(672, 544, 288, 384), "label": Vector2(696, 596), "floor": "morgue"},
-	{"title": "ЛИФТОВОЙ ХОЛЛ", "rect": Rect2(992, 544, 512, 384), "label": Vector2(1016, 596), "floor": "lift"},
-	{"title": "ПОДВАЛ", "rect": Rect2(32, 960, 1472, 128), "label": Vector2(56, 1012), "floor": "basement"},
-	{"title": "АРХИВ", "rect": Rect2(32, 1120, 544, 128), "label": Vector2(56, 1172), "floor": "archive"},
-	{"title": "КОТЕЛЬНАЯ", "rect": Rect2(608, 1120, 448, 128), "label": Vector2(632, 1172), "floor": "boiler"},
-]
-
-const WALLS := [
-	Rect2(0, 0, 1536, 32),
-	Rect2(0, 1248, 1536, 32),
-	Rect2(0, 0, 32, 1280),
-	Rect2(1504, 0, 32, 1280),
-	Rect2(640, 32, 32, 288),
-	Rect2(960, 32, 32, 288),
-	Rect2(32, 320, 256, 32),
-	Rect2(352, 320, 416, 32),
-	Rect2(832, 320, 352, 32),
-	Rect2(1248, 320, 256, 32),
-	Rect2(32, 512, 256, 32),
-	Rect2(352, 512, 416, 32),
-	Rect2(832, 512, 352, 32),
-	Rect2(1248, 512, 256, 32),
-	Rect2(640, 544, 32, 384),
-	Rect2(960, 544, 32, 384),
-	Rect2(0, 928, 288, 32),
-	Rect2(352, 928, 1184, 32),
-	Rect2(32, 1088, 256, 32),
-	Rect2(352, 1088, 416, 32),
-	Rect2(832, 1088, 256, 32),
-	Rect2(1088, 1088, 416, 32),
-	Rect2(576, 1120, 32, 128),
-	Rect2(1056, 1120, 32, 128),
-]
+var layout: WorldLayout
+var MAP_SIZE := Vector2.ZERO
+var TILE := 32
+var ROOMS: Array[Dictionary] = []
+var WALLS: Array[Rect2] = []
+var DOORS: Array[Dictionary] = []
+var PROPS: Array[Dictionary] = []
+var DECALS: Array[Dictionary] = []
+var ITEM_SPAWNS: Array[Dictionary] = []
+var ELEVATOR_RECT := Rect2()
 
 const FLOOR_CORRIDOR_A := preload("res://assets/textures/floors/floor_corridor_a.png")
 const FLOOR_CORRIDOR_B := preload("res://assets/textures/floors/floor_corridor_b.png")
-const FLOOR_CORRIDOR_C := preload("res://assets/textures/floors/floor_corridor_c.png")
-const FLOOR_CORRIDOR_STAIN := preload("res://assets/textures/floors/floor_corridor_stain.png")
-const FLOOR_CORRIDOR_WET := preload("res://assets/textures/floors/floor_corridor_wet.png")
-const FLOOR_GRATE := preload("res://assets/textures/floors/floor_grate.png")
-const FLOOR_LOBBY := preload("res://assets/textures/floors/floor_lobby.png")
-const FLOOR_MORGUE := preload("res://assets/textures/floors/floor_morgue.png")
-const FLOOR_WARD := preload("res://assets/textures/floors/floor_ward.png")
-const FLOOR_ARCHIVE := preload("res://assets/textures/floors/floor_archive.png")
-const FLOOR_BOILER := preload("res://assets/textures/floors/floor_boiler.png")
-
 const WALL_CAP := preload("res://assets/textures/walls/wall_cap.png")
 const WALL_PIPE := preload("res://assets/textures/walls/wall_pipe.png")
 const WALL_FACE_A := preload("res://assets/textures/walls/wall_face_a.png")
 const WALL_FACE_B := preload("res://assets/textures/walls/wall_face_b.png")
 const WALL_FACE_C := preload("res://assets/textures/walls/wall_face_c.png")
-
-const DOOR_DOUBLE_FRAME := preload("res://assets/textures/doors/door_double_frame.png")
-const DOOR_DOUBLE_PANEL_LEFT := preload("res://assets/textures/doors/door_double_panel_left.png")
-const DOOR_DOUBLE_PANEL_RIGHT := preload("res://assets/textures/doors/door_double_panel_right.png")
 const DOOR_ELEVATOR := preload("res://assets/textures/doors/door_elevator.png")
-const DOOR_MORGUE_FRAME := preload("res://assets/textures/doors/door_morgue_frame.png")
-const DOOR_MORGUE_PANEL := preload("res://assets/textures/doors/door_morgue_panel.png")
-const DOOR_WARD_FRAME := preload("res://assets/textures/doors/door_ward_frame.png")
-const DOOR_WARD_PANEL := preload("res://assets/textures/doors/door_ward_panel.png")
-
-const PROP_RECEPTION_DESK := preload("res://assets/textures/furniture/prop_reception_desk.png")
-const PROP_FILING_CABINET := preload("res://assets/textures/furniture/prop_filing_cabinet.png")
-const PROP_CHAIR := preload("res://assets/textures/furniture/prop_chair.png")
-const PROP_WAITING_BENCH := preload("res://assets/textures/furniture/prop_waiting_bench.png")
-const PROP_HOSPITAL_BED := preload("res://assets/textures/furniture/prop_hospital_bed.png")
-const PROP_METAL_CABINET := preload("res://assets/textures/furniture/prop_metal_cabinet.png")
-const PROP_MORGUE_TABLE := preload("res://assets/textures/furniture/prop_morgue_table.png")
-const PROP_BODY_BAG := preload("res://assets/textures/furniture/prop_body_bag.png")
-const PROP_GENERATOR := preload("res://assets/textures/devices/prop_generator.png")
-const PROP_FUSEBOX := preload("res://assets/textures/devices/prop_fusebox.png")
-const PROP_IV_STAND := preload("res://assets/textures/devices/prop_iv_stand.png")
-const PROP_WHEELCHAIR := preload("res://assets/textures/devices/prop_wheelchair.png")
-const PROP_ELEVATOR_PANEL := preload("res://assets/textures/devices/prop_elevator_panel.png")
-const PROP_BOARDED_DOOR := preload("res://assets/textures/barriers/prop_boarded_door.png")
-const PROP_OBSERVATION_WINDOW := preload("res://assets/textures/barriers/prop_observation_window.png")
-const PROP_SHELF := preload("res://assets/textures/furniture/prop_shelf.png")
-const PROP_STAIRS := preload("res://assets/textures/furniture/prop_stairs.png")
-const PROP_BOILER_TANK := preload("res://assets/textures/devices/prop_boiler_tank.png")
-const PROP_COLLAPSE := preload("res://assets/textures/barriers/prop_collapse.png")
-
-const DECAL_BLOOD_POOL := preload("res://assets/textures/decals/decal_blood_pool.png")
-const DECAL_BLOOD_SMEAR := preload("res://assets/textures/decals/decal_blood_smear.png")
-const DECAL_MOLD := preload("res://assets/textures/decals/decal_mold.png")
-const DECAL_STAIN := preload("res://assets/textures/decals/decal_stain.png")
-const DECAL_WALL_CRACK := preload("res://assets/textures/decals/decal_wall_crack.png")
-const DECAL_CRACK := preload("res://assets/textures/decals/decal_crack.png")
-
-const ITEM_CASSETTE := preload("res://assets/textures/items/item_cassette.png")
-const ITEM_FUSE := preload("res://assets/textures/items/item_fuse.png")
-const ITEM_KEY := preload("res://assets/textures/items/item_key.png")
-const ITEM_NOTE := preload("res://assets/textures/items/item_note.png")
-
-const CORRIDOR_FLOORS := [
-	FLOOR_CORRIDOR_A, FLOOR_CORRIDOR_A, FLOOR_CORRIDOR_B,
-	FLOOR_CORRIDOR_C, FLOOR_CORRIDOR_WET, FLOOR_CORRIDOR_STAIN,
-]
-const LOBBY_FLOORS := [
-	FLOOR_LOBBY, FLOOR_LOBBY, FLOOR_LOBBY, FLOOR_LOBBY, FLOOR_CORRIDOR_A,
-]
-const WARD_FLOORS := [
-	FLOOR_WARD, FLOOR_WARD, FLOOR_WARD, FLOOR_WARD, FLOOR_CORRIDOR_A,
-]
-const MORGUE_FLOORS := [
-	FLOOR_MORGUE, FLOOR_MORGUE, FLOOR_MORGUE, FLOOR_CORRIDOR_C,
-]
-const UTILITY_FLOORS := [
-	FLOOR_GRATE, FLOOR_GRATE, FLOOR_CORRIDOR_B,
-]
-const HALL_FLOORS := [
-	FLOOR_LOBBY, FLOOR_LOBBY, FLOOR_LOBBY, FLOOR_CORRIDOR_B, FLOOR_CORRIDOR_STAIN,
-]
-const LIFT_FLOORS := [
-	FLOOR_LOBBY, FLOOR_CORRIDOR_A, FLOOR_CORRIDOR_B,
-]
-const BASEMENT_FLOORS := [
-	FLOOR_GRATE, FLOOR_CORRIDOR_C, FLOOR_CORRIDOR_WET, FLOOR_MORGUE,
-]
-const ARCHIVE_FLOORS := [
-	FLOOR_ARCHIVE,
-]
-const BOILER_FLOORS := [
-	FLOOR_BOILER, FLOOR_BOILER, FLOOR_BOILER, FLOOR_GRATE,
-]
-
-const DOORS := [
-	{"rect": Rect2(288, 320, 64, 32), "frame": DOOR_WARD_FRAME,
-		"panels": [DOOR_WARD_PANEL], "label": "ПРИЁМНОЕ"},
-	{"rect": Rect2(768, 320, 64, 32), "frame": DOOR_WARD_FRAME,
-		"panels": [DOOR_WARD_PANEL], "label": "ЩИТОВАЯ"},
-	{"rect": Rect2(1184, 320, 64, 32), "frame": DOOR_DOUBLE_FRAME,
-		"panels": [DOOR_DOUBLE_PANEL_LEFT, DOOR_DOUBLE_PANEL_RIGHT], "label": "ПАЛАТА 13"},
-	{"rect": Rect2(288, 512, 64, 32), "frame": DOOR_WARD_FRAME,
-		"panels": [DOOR_WARD_PANEL], "label": "ХОЛЛ"},
-	{"rect": Rect2(768, 512, 64, 32), "frame": DOOR_MORGUE_FRAME,
-		"panels": [DOOR_MORGUE_PANEL], "label": "МОРГ"},
-	{"rect": Rect2(1184, 512, 64, 32), "frame": DOOR_WARD_FRAME,
-		"panels": [DOOR_WARD_PANEL], "label": "ЛИФТ"},
-	{"rect": Rect2(288, 1088, 64, 32), "frame": DOOR_WARD_FRAME,
-		"panels": [DOOR_WARD_PANEL], "label": "АРХИВ"},
-	{"rect": Rect2(768, 1088, 64, 32), "frame": DOOR_MORGUE_FRAME,
-		"panels": [DOOR_MORGUE_PANEL], "label": "КОТЕЛЬНАЯ"},
-	{"rect": Rect2(832, 1216, 64, 32), "frame": DOOR_MORGUE_FRAME,
-		"panels": [DOOR_MORGUE_PANEL], "label": "−1", "auto": false, "label_above": true},
-]
-
-const PROPS := [
-	{"texture": PROP_RECEPTION_DESK, "pos": Vector2(440, 176)},
-	{"texture": PROP_FILING_CABINET, "pos": Vector2(88, 160)},
-	{"texture": PROP_CHAIR, "pos": Vector2(464, 144)},
-	{"texture": PROP_METAL_CABINET, "pos": Vector2(836, 56)},
-	{"texture": PROP_FUSEBOX, "pos": Vector2(844, 166)},
-	{"texture": PROP_GENERATOR, "pos": Vector2(912, 204)},
-	{"texture": PROP_HOSPITAL_BED, "pos": Vector2(1040, 164)},
-	{"texture": PROP_HOSPITAL_BED, "pos": Vector2(1240, 164)},
-	{"texture": PROP_IV_STAND, "pos": Vector2(1200, 190)},
-	{"texture": PROP_OBSERVATION_WINDOW, "pos": Vector2(1432, 36), "solid": false},
-	{"texture": PROP_MORGUE_TABLE, "pos": Vector2(704, 620)},
-	{"texture": PROP_MORGUE_TABLE, "pos": Vector2(832, 620)},
-	{"texture": PROP_BODY_BAG, "pos": Vector2(720, 628), "solid": false},
-	{"texture": PROP_BODY_BAG, "pos": Vector2(848, 628), "solid": false},
-	{"texture": PROP_METAL_CABINET, "pos": Vector2(832, 704)},
-	{"texture": PROP_RECEPTION_DESK, "pos": Vector2(140, 680)},
-	{"texture": PROP_WAITING_BENCH, "pos": Vector2(64, 640)},
-	{"texture": PROP_WAITING_BENCH, "pos": Vector2(64, 760)},
-	{"texture": PROP_WHEELCHAIR, "pos": Vector2(360, 820)},
-	{"texture": PROP_BOARDED_DOOR, "pos": Vector2(280, 896), "id": "stairs_board"},
-	{"texture": PROP_STAIRS, "pos": Vector2(288, 880), "id": "stairs_sprite", "solid": false, "hidden": true},
-	{"texture": PROP_ELEVATOR_PANEL, "pos": Vector2(1468, 764), "solid": false},
-	{"texture": PROP_SHELF, "pos": Vector2(96, 1216)},
-	{"texture": PROP_SHELF, "pos": Vector2(192, 1216)},
-	{"texture": PROP_SHELF, "pos": Vector2(400, 1216)},
-	{"texture": PROP_SHELF, "pos": Vector2(496, 1216)},
-	{"texture": PROP_BOILER_TANK, "pos": Vector2(616, 1140)},
-	{"texture": PROP_BOILER_TANK, "pos": Vector2(992, 1168)},
-	{"texture": PROP_COLLAPSE, "pos": Vector2(1160, 1010), "solid": false},
-]
-
-const DECALS := [
-	{"texture": DECAL_WALL_CRACK, "pos": Vector2(80, 68)},
-	{"texture": DECAL_STAIN, "pos": Vector2(480, 88)},
-	{"texture": DECAL_MOLD, "pos": Vector2(1056, 72)},
-	{"texture": DECAL_BLOOD_SMEAR, "pos": Vector2(592, 468)},
-	{"texture": DECAL_BLOOD_POOL, "pos": Vector2(232, 560)},
-	{"texture": DECAL_CRACK, "pos": Vector2(1330, 700)},
-	{"texture": DECAL_MOLD, "pos": Vector2(72, 1136)},
-	{"texture": DECAL_STAIN, "pos": Vector2(342, 1150)},
-	{"texture": DECAL_WALL_CRACK, "pos": Vector2(622, 1140)},
-	{"texture": DECAL_CRACK, "pos": Vector2(1180, 1052)},
-]
-
-const ITEM_SPAWNS := [
-	{"id": "lobby_note", "flag": "lobby_note_read", "texture": ITEM_NOTE, "pos": Vector2(176, 704)},
-	{"id": "reception_note", "flag": "reception_note_read", "texture": ITEM_NOTE, "pos": Vector2(492, 270)},
-	{"id": "fuse", "flag": "fuse_taken", "texture": ITEM_FUSE, "pos": Vector2(104, 200)},
-	{"id": "key", "flag": "key_taken", "texture": ITEM_KEY, "pos": Vector2(832, 726)},
-	{"id": "tape", "flag": "tape_heard", "texture": ITEM_CASSETTE, "pos": Vector2(656, 462)},
-	{"id": "ward_chart", "flag": "ward_chart_read", "texture": ITEM_NOTE, "pos": Vector2(1392, 244)},
-	{"id": "archive_note_1", "flag": "archive_note_1", "texture": ITEM_NOTE, "pos": Vector2(96, 1200)},
-	{"id": "archive_note_2", "flag": "archive_note_2", "texture": ITEM_NOTE, "pos": Vector2(192, 1200)},
-	{"id": "archive_note_3", "flag": "archive_note_3", "texture": ITEM_NOTE, "pos": Vector2(400, 1200)},
-	{"id": "basement_note", "flag": "basement_note", "texture": ITEM_NOTE, "pos": Vector2(1112, 1032)},
-	{"id": "boiler_note", "flag": "boiler_note", "texture": ITEM_NOTE, "pos": Vector2(896, 1200)},
-	{"id": "tape_second", "flag": "tape_second_heard", "texture": ITEM_CASSETTE, "pos": Vector2(688, 1184)},
-]
-
-const ELEVATOR_RECT := Rect2(1400, 612, 100, 140)
 const DOOR_OPEN_DISTANCE := 66.0
 const DOOR_CLOSE_DISTANCE := 82.0
 
@@ -300,6 +104,7 @@ var _time := 0.0
 
 func _ready() -> void:
 	z_index = 0
+	_load_layout()
 	y_sort_enabled = true
 	_build_collisions()
 	_build_stains()
@@ -378,6 +183,19 @@ func set_power_on() -> void:
 	_add_power_lights()
 	_spawn_enemy()
 	queue_redraw()
+
+
+func _load_layout() -> void:
+	layout = WorldLayout.load_default()
+	MAP_SIZE = layout.map_size
+	TILE = layout.tile
+	ELEVATOR_RECT = layout.elevator_rect
+	ROOMS = layout.rooms
+	WALLS = layout.walls
+	DOORS = layout.doors
+	PROPS = layout.props
+	DECALS = layout.decals
+	ITEM_SPAWNS = layout.item_spawns
 
 
 func _build_stairs() -> void:
@@ -505,6 +323,7 @@ func _build_doors() -> void:
 			"collision": collision,
 			"center": rect.get_center(),
 			"open": false,
+			"auto": bool(door.get("auto", true)),
 			"tween": null,
 		})
 
@@ -660,39 +479,14 @@ func _build_stains() -> void:
 
 
 func _build_interactions() -> void:
-	if not GameState.has_flag("intro_note_read"):
-		_add_interaction("lobby_note", "Прочитать объявление", "note", Vector2(184, 712))
-	if not GameState.has_flag("reception_note_read"):
-		_add_interaction("reception_note", "Открыть журнал приёма", "note", Vector2(500, 278))
-	if not GameState.has_flag("fuse_taken"):
-		_add_interaction("fuse", "Взять предохранитель", "item", Vector2(112, 208))
-	_add_interaction("fusebox", "Осмотреть электрощит", "device", Vector2(860, 182))
-	if not GameState.has_flag("key_taken"):
-		_add_interaction("morgue_key", "Взять служебный ключ", "item", Vector2(840, 734))
-	if not GameState.has_flag("tape_heard"):
-		_add_interaction("tape", "Прослушать запись", "note", Vector2(664, 470))
-	if not GameState.has_flag("ward_chart_read"):
-		_add_interaction("ward_chart", "Прочитать карту наблюдения", "note", Vector2(1400, 252))
-	_add_interaction("window", "Подойти к смотровому стеклу", "window", Vector2(1464, 104))
-	_add_interaction("elevator", "Вызвать лифт", "elevator", Vector2(1456, 764))
-	_add_interaction("cover_cabinet", "Спрятаться в шкаф", "cover", Vector2(852, 116))
-	_add_interaction("cover_bed", "Спрятаться под кровать", "cover", Vector2(1088, 228))
-	var stairs_prompt := "Спуститься в подвал" if power_on else "Осмотреть дверь на лестницу"
-	_add_interaction("stairs_down", stairs_prompt, "stairs", Vector2(320, 910))
-	_add_interaction("stairs_up", "Подняться в холл", "stairs", Vector2(320, 1016))
-	if not GameState.has_flag("archive_note_1"):
-		_add_interaction("archive_note_1", "Прочитать опись архива", "note", Vector2(104, 1208))
-	if not GameState.has_flag("archive_note_2"):
-		_add_interaction("archive_note_2", "Прочитать форму согласия", "note", Vector2(200, 1208))
-	if not GameState.has_flag("archive_note_3"):
-		_add_interaction("archive_note_3", "Прочитать черновик заявления", "note", Vector2(408, 1208))
-	if not GameState.has_flag("basement_note"):
-		_add_interaction("basement_note", "Прочитать служебную записку", "note", Vector2(1120, 1040))
-	if not GameState.has_flag("boiler_note"):
-		_add_interaction("boiler_note", "Прочитать журнал котельной", "note", Vector2(904, 1208))
-	if not GameState.has_flag("tape_second_heard"):
-		_add_interaction("tape_second", "Прослушать кассету", "note", Vector2(696, 1192))
-	_add_interaction("boiler_door", "Дверь «−1»", "stairs", Vector2(864, 1216))
+	for entry: Dictionary in layout.interactions:
+		var absent := str(entry.get("absent_flag", ""))
+		if not absent.is_empty() and GameState.has_flag(absent):
+			continue
+		var prompt := str(entry.get("prompt", ""))
+		if entry.has("prompt_unpowered") and not power_on:
+			prompt = str(entry["prompt_unpowered"])
+		_add_interaction(str(entry["id"]), prompt, str(entry["kind"]), entry["pos"])
 
 
 func _add_interaction(id: String, prompt: String, kind: String, pos: Vector2) -> void:
@@ -779,29 +573,7 @@ func _hash01(x: int, y: int, salt: int) -> float:
 
 
 func _floor_textures(kind: String) -> Array:
-	match kind:
-		"corridor":
-			return CORRIDOR_FLOORS
-		"lobby":
-			return LOBBY_FLOORS
-		"ward":
-			return WARD_FLOORS
-		"morgue":
-			return MORGUE_FLOORS
-		"utility":
-			return UTILITY_FLOORS
-		"hall":
-			return HALL_FLOORS
-		"lift":
-			return LIFT_FLOORS
-		"basement":
-			return BASEMENT_FLOORS
-		"archive":
-			return ARCHIVE_FLOORS
-		"boiler":
-			return BOILER_FLOORS
-		_:
-			return CORRIDOR_FLOORS
+	return layout.floor_sets.get(kind, layout.floor_sets.get("corridor", []))
 
 
 func _draw() -> void:
