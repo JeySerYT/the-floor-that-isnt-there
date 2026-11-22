@@ -17,6 +17,8 @@ func _initialize() -> void:
 	test_truth_unlock()
 	test_basement_objective()
 	test_manifest_assets_exist()
+	test_save_data_format()
+	test_story_data()
 	print("Results: %d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)
 
@@ -231,3 +233,62 @@ func test_manifest_assets_exist() -> void:
 		if rel.is_empty() or not FileAccess.file_exists(rel):
 			missing.append(str(asset.get("id", "?")))
 	assert_eq(missing.size(), 0, "manifest_files_present: %s" % str(missing))
+
+
+func test_save_data_format() -> void:
+	var save_script: Script = load("res://scripts/core/save_data.gd")
+	var defaults := {"objective": "Старт", "checkpoint": Vector2(1, 2)}
+
+	var current: Dictionary = save_script.call("decode", {
+		"version": 3,
+		"flags": {"power_on": true},
+		"inventory": ["fuse", "fuse"],
+		"objective": "Найти ключ",
+		"checkpoint": [10.0, 20.0],
+		"play_time": 4.5,
+		"ending": "truth",
+	}, defaults["objective"], defaults["checkpoint"])
+	assert_true(bool(current["ok"]), "save_v3_ok")
+	assert_eq(current["checkpoint"], Vector2(10, 20), "save_v3_checkpoint")
+	assert_eq(current["inventory"].size(), 1, "save_inventory_deduplicated")
+	assert_true(not bool(current["rebuild_objective"]), "save_v3_keeps_objective")
+	assert_eq(current["ending"], "truth", "save_v3_ending")
+
+	var legacy: Dictionary = save_script.call("decode", {
+		"version": 1,
+		"flags": {"power_on": true},
+		"checkpoint": [80.0, 420.0],
+	}, defaults["objective"], defaults["checkpoint"])
+	assert_eq(legacy["checkpoint"], Vector2(160, 840), "save_v1_checkpoint_scaled")
+	assert_true(bool(legacy["rebuild_objective"]), "save_v1_rebuilds_objective")
+
+	var broken: Dictionary = save_script.call("decode", "не словарь", defaults["objective"], defaults["checkpoint"])
+	assert_true(not bool(broken["ok"]), "save_rejects_garbage")
+
+	var empty: Dictionary = save_script.call("decode", {"version": 3}, defaults["objective"], defaults["checkpoint"])
+	assert_eq(empty["objective"], "Старт", "save_defaults_objective")
+	assert_eq(empty["checkpoint"], Vector2(1, 2), "save_defaults_checkpoint")
+
+
+func test_story_data() -> void:
+	var story_script: Script = load("res://scripts/core/story.gd")
+	var keys: Array = story_script.call("keys")
+	assert_true(keys.size() >= 20, "story_has_entries")
+	var required := [
+		"intro", "lobby", "reception", "fuse", "power", "key", "tape", "ward",
+		"archive_note_1", "archive_note_2", "archive_note_3", "basement_note",
+		"boiler_note", "tape_second", "boiler_scene", "truth", "escape", "release",
+	]
+	var missing: Array[String] = []
+	for key: String in required:
+		if not bool(story_script.call("has", key)):
+			missing.append(key)
+	assert_eq(missing.size(), 0, "story_required_keys: %s" % str(missing))
+	var empty: Array[String] = []
+	for key: Variant in keys:
+		var text := str(story_script.call("text", str(key)))
+		if text.strip_edges().is_empty():
+			empty.append(str(key))
+	assert_eq(empty.size(), 0, "story_no_empty_text: %s" % str(empty))
+	assert_true(not story_script.call("title", "intro").is_empty(), "story_title")
+	assert_true(not story_script.call("text", "intro").contains("\\n"), "story_newlines_joined")

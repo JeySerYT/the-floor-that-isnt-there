@@ -3,227 +3,6 @@ extends Node2D
 const PLAYER_SCENE := preload("res://scenes/player.tscn")
 const WORLD_SCENE := preload("res://scenes/world.tscn")
 
-const INTRO_TEXT := """[color=#9a6257]Три дня назад. Комната отдыха.[/color]
-
-Ты помнишь её пальцы на затылке
-и смех, когда ты закрывал дверь.
-
-Потом — холод коридора и кровь
-на кафеле.
-
-В 03:12 телефон оживает:
-[color=#8a6a34]«Поднимись на этаж, которого нет».[/color]"""
-
-const LOBBY_NOTE := """[center][color=#9a6257]БОЛЬНИЦА «БЕЛЫЙ ШУМ»[/color][/center]
-
-Внимание персоналу.
-
-Лифт на 13-й этаж закрыт.
-Не отвечайте, если по громкой связи
-назовут ваше имя.
-
-Если увидите медсестру без лица —
-не смотрите на её руки."""
-
-const RECEPTION_NOTE := """[color=#9a6257]Журнал приёма. 13 декабря.[/color]
-
-Пациентка №13: Лера Н., 26 лет.
-Диагноз: «добровольная участница».
-
-Переведена на этаж 13.
-Перевод подтвердила: Лера Н.
-
-Внизу другими чернилами:
-[color=#8a5a3c]«Она больше не выходила».[/color]"""
-
-const FUSE_NOTE := """Электрощит обесточен.
-
-На месте главного предохранителя — пустая
-колодка и следы пальцев в саже.
-
-Без питания лифт не поедет.
-Приёмное. Верхний ящик картотеки."""
-
-const POWER_NOTE := """[color=#9a6257]Щелчок. Гудение. Свет.[/color]
-
-В конце коридора на секунду появляется
-женская фигура в белом.
-
-Когда ты смотришь снова, коридор пуст.
-
-На табло лифта мигает [color=#a02a24]13[/color].
-Служебный ключ должен быть в морге."""
-
-const KEY_NOTE := """[color=#9a6257]МОРГ[/color]
-
-Ключ лежит на столе рядом с телом.
-
-На бирке: [color=#a02a24]«Марк В., 27 лет.
-Ножевое ранение».[/color]
-
-На запястье — твои часы.
-Стрелки стоят на 03:12."""
-
-const TAPE_NOTE := """[color=#9a6257]Запись 04. Комната отдыха. 02:47.[/color]
-
-[i]Шорох ткани. Приглушённый смех.[/i]
-
-Лера: «Марк... не здесь. Дверь хотя бы закрой».
-Марк: «Никто не войдёт».
-
-[i]Щелчок замка. Долгая тишина.[/i]
-
-Незнакомый голос: «Вы забыли закрыть дверь».
-
-[i]Удар. Короткий вскрик.
-Запись обрывается.[/i]"""
-
-const WARD_NOTE := """[color=#9a6257]Карта наблюдения. Палата 13.[/color]
-
-Пациентка: Лера Н.
-Статус: [color=#a02a24]не пациентка[/color].
-
-После смерти Марка В. она отказалась
-отпускать тело.
-
-Этаж 13 — место, где она помнит вас.
-[color=#8a5a3c]Не разбивайте стекло.[/color]"""
-
-const WINDOW_TEXT := """За стеклом стоит Лера.
-Она не стучит и не улыбается.
-
-С твоей стороны — кровавый след.
-Твоя рука уже касается его.
-
-Если разбить стекло, она сможет выйти."""
-
-const ARCHIVE_NOTE_1 := """[color=#9a6257]Архив. Опись 1998–2004.[/color]
-
-Дело №13 не закрыто.
-В графе «пациент» — Лера Н.
-В графе «врач» — пусто.
-
-На обороте, чужой рукой:
-[color=#8a5a3c]«Этаж не существует.
-Он существует, пока в него верят».[/color]"""
-
-const ARCHIVE_NOTE_2 := """[color=#9a6257]Форма добровольного согласия.[/color]
-
-Я, Марк В., согласен на процедуру
-«удержание памяти».
-
-Подпись: [color=#a02a24]Марк В.[/color]
-Дата: 12 декабря, 03:12.
-
-Ниже, другим почерком:
-[color=#8a5a3c]«Он подписал сам.
-Никто его не заставлял».[/color]"""
-
-const ARCHIVE_NOTE_3 := """[color=#9a6257]Черновик заявления. Не отправлено.[/color]
-
-«Я не хочу, чтобы он уходил.
-Если этаж умеет держать,
-пусть держит».
-
-Подпись смазана. Внизу — капля крови
-и отпечаток маленькой ладони."""
-
-const BASEMENT_NOTE := """[color=#9a6257]Служебная записка. Обход подвала.[/color]
-
-В 03:00 свет в котельной гаснет сам.
-Не ищите причину.
-Не спускайтесь вдвоём.
-
-Если услышите, как кто-то называет
-ваше имя, — не отвечайте."""
-
-const BOILER_NOTE := """[color=#9a6257]Журнал котельной. Последняя запись.[/color]
-
-Давление в норме.
-Температура в норме.
-В коридоре стоит женщина.
-
-Она спрашивает, где Марк.
-Я сказал, что не знаю.
-
-[color=#8a5a3c]Я соврал.[/color]"""
-
-const TAPE_SECOND_NOTE := """[color=#9a6257]Кассета без номера. Сторона Б.[/color]
-
-[i]Голос Леры, очень близко к микрофону.[/i]
-
-«Марк, если ты это слышишь —
-я не прячу тебя.
-Я держу этаж, чтобы ты не ушёл туда,
-где тебя нет.
-
-Прости меня. И не спускайся на −1.
-Там нет меня. Там только то,
-что от меня осталось».
-
-[i]Щелчок. Плёнка тянется дальше.[/i]"""
-
-const BOILER_SCENE_TEXT := """[color=#9a6257]Свет гаснет.[/color]
-
-Котёл остывает с долгим вздохом.
-В темноте кто-то поправляет халат.
-
-Голос у двери:
-[color=#b78968]«Ты всё-таки пришёл».[/color]
-
-Это не Лера."""
-
-const BOILER_DOOR_TEXT := """Дверь открывается внутрь.
-За ней — ступени, которых нет на плане.
-
-Снизу тянет холодом
-и чем-то знакомым."""
-
-const TRUTH_ENDING := """[center]Дверь «−1» открывается вниз.[/center]
-
-Ступени считают тебя.
-На последней — стол, лампа и папка
-с твоим именем.
-
-В папке — согласие. Подпись твоя.
-Внизу приписка Леры:
-[color=#b78968]«Я держала тебя, пока могла».[/color]
-
-Этаж не отпускает. Он просто
-перестаёт притворяться больницей.
-
-Ты слышишь, как за спиной
-закрывается дверь. И ещё одну."""
-
-const ELEVATOR_TEXT := """Служебный лифт вздрагивает.
-
-Кнопки нет. Кабина уже знает, куда ехать.
-За дверями слышно, как Лера произносит
-твоё имя — очень тихо, будто во сне.
-
-Можно уйти. Можно остаться."""
-
-const ESCAPE_ENDING := """[center]Ты входишь в лифт один.[/center]
-
-Двери закрываются. Кабина едет вниз,
-хотя этажей под больницей нет.
-
-Дома на зеркале проступает:
-[color=#8a5a3c]«Ты забыл, как я дышала».[/color]
-
-Через три дня на пороге лежит ключ.
-На бирке выбито твоё имя."""
-
-const RELEASE_ENDING := """[center]Стекло лопается внутрь.[/center]
-
-Лера выходит босая. Живая.
-Её ладонь теплее, чем должна быть.
-
-[color=#b78968]«Ты умер в коридоре, Марк.
-Я не позволила забрать тебя.
-Этот этаж держит нас обоих».[/color]
-Больница за окном гаснет.
-Но на каждом этаже загорается свет."""
 
 var world: HospitalWorld
 var player: Player
@@ -334,7 +113,7 @@ func _setup_input() -> void:
 func _on_new_game() -> void:
 	GameState.reset_new_game()
 	_begin_session()
-	_show_note("ПОСЛЕДНЯЯ НОЧЬ", INTRO_TEXT, true)
+	_show_note_key("intro", true)
 
 
 func _on_continue() -> void:
@@ -385,6 +164,11 @@ func _show_note(title: String, body: String, is_intro: bool = false) -> void:
 	ui.set_prompt("")
 	ui.show_note(title, body)
 	get_tree().paused = true
+
+
+func _show_note_key(key: String, is_intro: bool = false) -> void:
+	var entry := Story.note(key)
+	_show_note(entry["title"], entry["text"], is_intro)
 
 
 func _close_note() -> void:
@@ -441,7 +225,7 @@ func _interact(target: Interaction) -> void:
 			target.enabled = false
 			GameState.set_flag("lobby_note_read")
 			_autosave()
-			_show_note("ОБЪЯВЛЕНИЕ", LOBBY_NOTE)
+			_show_note_key("lobby")
 		"reception_note":
 			target.enabled = false
 			GameState.set_flag("reception_note_read")
@@ -451,7 +235,7 @@ func _interact(target: Interaction) -> void:
 				GameState.set_objective("Взять предохранитель из картотеки в приёмном покое.")
 			ui.set_objective(GameState.objective)
 			_autosave()
-			_show_note("ЖУРНАЛ ПРИЁМА", RECEPTION_NOTE)
+			_show_note_key("reception")
 		"fuse":
 			_collect_fuse(target)
 		"fusebox":
@@ -463,7 +247,7 @@ func _interact(target: Interaction) -> void:
 			GameState.set_flag("tape_heard")
 			AudioManager.play_sfx("stinger", -12.0, 0.03)
 			_autosave()
-			_show_note("ЗАПИСЬ 04", TAPE_NOTE)
+			_show_note_key("tape")
 		"ward_chart":
 			target.enabled = false
 			GameState.set_flag("ward_chart_read")
@@ -473,7 +257,7 @@ func _interact(target: Interaction) -> void:
 				GameState.set_objective("Найти служебный ключ в морге.")
 			ui.set_objective(GameState.objective)
 			_autosave()
-			_show_note("КАРТА НАБЛЮДЕНИЯ", WARD_NOTE)
+			_show_note_key("ward")
 		"window":
 			_try_window()
 		"elevator":
@@ -485,22 +269,22 @@ func _interact(target: Interaction) -> void:
 		"stairs_up":
 			_use_stairs_up()
 		"archive_note_1":
-			_read_collectible(target, "archive_note_1", "ОПИСЬ АРХИВА", ARCHIVE_NOTE_1)
+			_read_collectible(target, "archive_note_1")
 		"archive_note_2":
-			_read_collectible(target, "archive_note_2", "ФОРМА СОГЛАСИЯ", ARCHIVE_NOTE_2)
+			_read_collectible(target, "archive_note_2")
 		"archive_note_3":
-			_read_collectible(target, "archive_note_3", "ЧЕРНОВИК ЗАЯВЛЕНИЯ", ARCHIVE_NOTE_3)
+			_read_collectible(target, "archive_note_3")
 		"basement_note":
-			_read_collectible(target, "basement_note", "СЛУЖЕБНАЯ ЗАПИСКА", BASEMENT_NOTE)
+			_read_collectible(target, "basement_note")
 		"boiler_note":
-			_read_collectible(target, "boiler_note", "ЖУРНАЛ КОТЕЛЬНОЙ", BOILER_NOTE)
+			_read_collectible(target, "boiler_note")
 		"tape_second":
 			target.enabled = false
 			GameState.set_flag("tape_second_heard")
 			AudioManager.play_sfx("stinger", -12.0, 0.03)
 			_autosave()
 			_check_truth_progress()
-			_show_note("КАССЕТА. СТОРОНА Б", TAPE_SECOND_NOTE)
+			_show_note_key("tape_second")
 		"boiler_door":
 			_try_boiler_door()
 
@@ -542,14 +326,14 @@ func _toggle_flashlight() -> void:
 		ui.show_toast("Фонарь выключен: тебя хуже видно, но и ты видишь меньше.")
 
 
-func _read_collectible(target: Interaction, flag: String, title: String, body: String) -> void:
+func _read_collectible(target: Interaction, key: String) -> void:
 	if target != null:
 		target.enabled = false
-	GameState.set_flag(flag)
+	GameState.set_flag(key)
 	AudioManager.play_sfx("interact", -12.0)
 	_autosave()
 	_check_truth_progress()
-	_show_note(title, body)
+	_show_note_key(key)
 
 
 func _check_truth_progress() -> void:
@@ -568,7 +352,7 @@ func _check_truth_progress() -> void:
 
 func _try_stairs_down() -> void:
 	if not world.power_on:
-		_show_note("ЛЕСТНИЦА", "Дверь заколочена, а замок обесточен.\n\nБез питания её не открыть.")
+		_show_note_key("stairs_locked")
 		return
 	ui.play_transition()
 	AudioManager.play_sfx("power", -14.0)
@@ -615,18 +399,18 @@ func _trigger_boiler_scene() -> void:
 	ui.set_objective(GameState.objective)
 	AudioManager.play_sfx("stinger", -6.0, 0.01)
 	_autosave()
-	_show_note("СВЕТ ГАСНЕТ", BOILER_SCENE_TEXT)
+	_show_note_key("boiler_scene")
 
 
 func _try_boiler_door() -> void:
 	if not GameState.is_truth_unlocked():
-		_show_note("ДВЕРЬ «−1»", "Ржавая дверь без ручки.\n\nЗамок щёлкает, но не открывается.\nБудто ждёт, пока ты вспомнишь всё.")
+		_show_note_key("boiler_locked")
 		return
 	_choice_context = "boiler_door"
 	state = "choice"
 	_nearest = null
 	ui.set_prompt("")
-	ui.show_choice("ДВЕРЬ «−1»", BOILER_DOOR_TEXT, ["Спуститься", "Отойти"])
+	ui.show_choice(Story.title("boiler_door"), Story.text("boiler_door"), ["Спуститься", "Отойти"])
 	get_tree().paused = true
 
 
@@ -645,10 +429,10 @@ func _collect_fuse(target: Interaction) -> void:
 
 func _use_fusebox() -> void:
 	if world.power_on:
-		_show_note("ЭЛЕКТРОЩИТ", "Питание уже восстановлено.\n\nВ коридоре кто-то ходит.")
+		_show_note_key("fusebox_on")
 		return
 	if not GameState.has_flag("fuse_taken"):
-		_show_note("ЭЛЕКТРОЩИТ", FUSE_NOTE)
+		_show_note_key("fuse")
 		return
 	if not GameState.remove_item("fuse"):
 		return
@@ -660,7 +444,7 @@ func _use_fusebox() -> void:
 	AudioManager.play_sfx("power", -3.0)
 	AudioManager.play_sfx("stinger", -9.0, 0.02)
 	_autosave()
-	_show_note("ПИТАНИЕ ВОССТАНОВЛЕНО", POWER_NOTE)
+	_show_note_key("power")
 
 
 func _collect_key(target: Interaction) -> void:
@@ -677,44 +461,44 @@ func _collect_key(target: Interaction) -> void:
 	AudioManager.play_sfx("pickup", -6.0)
 	AudioManager.play_sfx("stinger", -11.0, 0.02)
 	_autosave()
-	_show_note("СЛУЖЕБНЫЙ КЛЮЧ", KEY_NOTE)
+	_show_note_key("key")
 
 
 func _try_window() -> void:
 	if not world.power_on:
-		_show_note("СМОТРОВОЕ СТЕКЛО", "За стеклом темно.\n\nНо темнота дышит.")
+		_show_note_key("window_dark")
 		return
 	if not GameState.has_flag("ward_chart_read"):
 		GameState.set_objective("Прочитать карту наблюдения в палате 13.")
 		ui.set_objective(GameState.objective)
-		_show_note("СМОТРОВОЕ СТЕКЛО", "За стеклом стоит женский силуэт.\n\nЕё лицо скрыто отражением.\nСначала нужно понять, кого ты видишь.")
+		_show_note_key("window_unknown")
 		return
 	_choice_context = "window"
 	state = "choice"
 	_nearest = null
 	ui.set_prompt("")
-	ui.show_choice("ЗА СТЕКЛОМ", WINDOW_TEXT, ["Разбить стекло", "Отойти"])
+	ui.show_choice(Story.title("window"), Story.text("window"), ["Разбить стекло", "Отойти"])
 	get_tree().paused = true
 
 
 func _try_elevator() -> void:
 	if not world.power_on:
-		_show_note("ЛИФТ", "Кнопка не горит.\n\nСлужебный лифт обесточен.")
+		_show_note_key("elevator_dark")
 		return
 	if not GameState.has_flag("key_taken"):
-		_show_note("ЛИФТ", "Кнопка не работает.\n\nПод панелью — замочная скважина.\nКлюч может быть в морге.")
+		_show_note_key("elevator_no_key")
 		return
 	_choice_context = "elevator"
 	state = "choice"
 	_nearest = null
 	ui.set_prompt("")
-	var body := ELEVATOR_TEXT
+	var body := Story.text("elevator")
 	var options: Array[String] = ["Войти в лифт"]
 	if GameState.is_truth_unlocked():
-		body += "\n\nПод панелью горит кнопка «−1»."
+		body += "\n\n" + Story.text("elevator_truth_hint")
 		options.append("Спуститься на −1")
 	options.append("Отойти")
-	ui.show_choice("СЛУЖЕБНЫЙ ЛИФТ", body, options)
+	ui.show_choice(Story.title("elevator"), body, options)
 	get_tree().paused = true
 
 
@@ -759,13 +543,12 @@ func _show_ending(ending_id: String) -> void:
 	AudioManager.stop_all()
 	if ending_id == "escape":
 		AudioManager.play_sfx("stinger", -8.0)
-		ui.show_ending("ЛИФТ ИДЁТ ВНИЗ", ESCAPE_ENDING)
 	elif ending_id == "truth":
 		AudioManager.play_sfx("heartbeat", -4.0)
-		ui.show_ending("ПРАВДА", TRUTH_ENDING, true)
 	else:
 		AudioManager.play_sfx("heartbeat", -4.0)
-		ui.show_ending("ЭТАЖ, КОТОРЫЙ ДЫШИТ", RELEASE_ENDING)
+	var entry := Story.note(ending_id)
+	ui.show_ending(entry["title"], entry["text"], ending_id == "truth")
 	GameState.delete_save()
 	get_tree().paused = true
 
