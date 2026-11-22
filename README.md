@@ -1,8 +1,8 @@
 # Этаж, которого нет
 
-[![Tests](https://github.com/JeySerYT/etazh-kotorogo-net/actions/workflows/tests.yml/badge.svg)](https://github.com/JeySerYT/etazh-kotorogo-net/actions/workflows/tests.yml)
-![Release](https://img.shields.io/github/v/release/JeySerYT/etazh-kotorogo-net?include_prereleases&label=release&color=7a1f1f)
-![License](https://img.shields.io/github/license/JeySerYT/etazh-kotorogo-net?color=7a1f1f)
+[![Tests](https://github.com/JeySerYT/the-floor-that-isnt-there/actions/workflows/tests.yml/badge.svg)](https://github.com/JeySerYT/the-floor-that-isnt-there/actions/workflows/tests.yml)
+![Release](https://img.shields.io/github/v/release/JeySerYT/the-floor-that-isnt-there?include_prereleases&label=release&color=7a1f1f)
+![License](https://img.shields.io/github/license/JeySerYT/the-floor-that-isnt-there?color=7a1f1f)
 ![Godot](https://img.shields.io/badge/Godot-4.7-478cbf)
 ![Platform](https://img.shields.io/badge/platform-Linux-333333)
 
@@ -33,8 +33,8 @@
 Самый короткий путь, если Godot уже в `PATH`:
 
 ```bash
-git clone https://github.com/JeySerYT/etazh-kotorogo-net.git
-cd etazh-kotorogo-net
+git clone https://github.com/JeySerYT/the-floor-that-isnt-there.git
+cd the-floor-that-isnt-there
 godot --path .
 ```
 
@@ -126,12 +126,23 @@ chmod +x .tools/godot
 Тесты:
 
 ```bash
-.tools/godot --headless --path . --script res://tests/test_runner.gd
+tests/run_all.sh
 ```
 
-Проверяются новая игра, флаги и инвентарь, сохранение и загрузка, миграция
-сейвов v1 → v3, настройки, правила света и шума, полнота записок для
-третьего финала и наличие всех файлов из манифеста.
+Скрипт импортирует ресурсы и прогоняет четыре набора: юнит-проверки,
+регрессию сюжета, свет/шум и подвал. Проверяются новая игра, флаги
+и инвентарь, сохранение и загрузка, миграция сейвов v1 → v3, настройки,
+правила света и шума, полнота записок для третьего финала и наличие всех
+файлов из манифеста.
+
+Релиз публикуется автоматически по тегу: workflow `Release` берёт заметки
+из `CHANGELOG.md` через `scripts/release_notes.py` и создаёт релиз на GitHub.
+Тег с дефисом (`vX.Y.Z-alpha.1`) помечается как prerelease.
+
+```bash
+git tag vX.Y.Z
+git push origin vX.Y.Z
+```
 
 Ассеты генерируются детерминированно, сторонних файлов нет:
 
@@ -153,15 +164,18 @@ nine-patch-марджины. Генераторы мержат манифест,
 ## Структура
 
 ```
+.github/workflows/    CI и публикация релизов
+assets/audio/         сгенерированные WAV
 assets/textures/      тайлы, мебель, двери, декали, персонажи, UI
-assets/previews/      контактные листы и макеты партий
-audio/                сгенерированные WAV
+docs/previews/        контактные листы и макеты партий
+docs/specs/           спеки версий
 scenes/               main, world, player
 scripts/              main, world, player, enemy, interaction, darkness
 scripts/autoload/     GameState, AudioManager, UserSettings
 scripts/ui/           GameUI
+scripts/release_notes.py  заметки релиза из CHANGELOG
 tests/                headless-тесты
-docs/specs/           спеки версий
+tests/scenarios/      сценарные регрессии
 tools/                генераторы текстур, звука и превью
 ```
 

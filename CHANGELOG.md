@@ -1,12 +1,15 @@
 # Changelog
 
-Все заметные изменения проекта. Формат основан на
-[Keep a Changelog](https://keepachangelog.com/ru/1.1.0/),
-версии — по [Semantic Versioning](https://semver.org/lang/ru/).
+Все значимые изменения проекта. Формат — [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/),
+версии — [Semantic Versioning](https://semver.org/lang/ru/).
 
-## [Unreleased]
+## Unreleased
 
-## [0.5.0-alpha.1] - 2026-11-22
+## 0.5.0-alpha.1
+
+*22 ноября 2026 · [сравнить с 0.4.0-alpha.1](https://github.com/JeySerYT/the-floor-that-isnt-there/compare/v0.4.0-alpha.1...v0.5.0-alpha.1)*
+
+Сюжетный виток: подвал, архив, котельная и третий финал.
 
 ### Добавлено
 
@@ -31,7 +34,12 @@
 - Формат сохранения остался версии 3: новые флаги — обычные записи словаря,
   миграция не нужна.
 
-## [0.4.0-alpha.1] - 2026-11-22
+## 0.4.0-alpha.1
+
+*22 ноября 2026 · [сравнить с 0.3.2-alpha.1](https://github.com/JeySerYT/the-floor-that-isnt-there/compare/v0.3.2-alpha.1...v0.4.0-alpha.1)*
+
+Свет, шум и укрытия: у игрока появились решения, а погоня перестала
+быть бесконечной.
 
 ### Добавлено
 
@@ -50,7 +58,12 @@
   выключенного света. Сердцебиение и напряжение реагируют на погоню
   и поиск, шаги медсестры слышны вблизи.
 
-## [0.3.2-alpha.1] - 2026-11-22
+## 0.3.2-alpha.1
+
+*22 ноября 2026 · [сравнить с 0.3.1-alpha.1](https://github.com/JeySerYT/the-floor-that-isnt-there/compare/v0.3.1-alpha.1...v0.3.2-alpha.1)*
+
+Хотфикс полноэкранного режима: игра больше не оставляет чёрные полосы
+и всегда стартует на весь экран.
 
 ### Исправлено
 
@@ -63,7 +76,11 @@
 - F11 определяет состояние по фактическому режиму окна, поэтому рассинхрон
   с сохранённым флагом больше не блокирует переключение.
 
-## [0.3.1-alpha.1] - 2026-11-22
+## 0.3.1-alpha.1
+
+*22 ноября 2026 · [сравнить с 0.3.0-alpha.1](https://github.com/JeySerYT/the-floor-that-isnt-there/compare/v0.3.0-alpha.1...v0.3.1-alpha.1)*
+
+Новое меню, полноэкранный запуск, нормальные двери и уменьшенный интерфейс.
 
 ### Добавлено
 
@@ -91,7 +108,11 @@
 - Проход в палату 13 больше не приводит к мгновенной ловле и «телепорту
   в щитовую».
 
-## [0.3.0-alpha.1] - 2026-11-22
+## 0.3.0-alpha.1
+
+*22 ноября 2026 · [сравнить с 0.2.0-alpha.1](https://github.com/JeySerYT/the-floor-that-isnt-there/compare/v0.2.0-alpha.1...v0.3.0-alpha.1)*
+
+Настройки, коллизии и читаемый маршрут по этажу.
 
 ### Добавлено
 
@@ -117,7 +138,11 @@
 - Закрытие записки щитка и повторное взаимодействие после закрытия окон:
   добавлена блокировка ввода на 0.25 с.
 
-## [0.2.0-alpha.1] - 2026-11-22
+## 0.2.0-alpha.1
+
+*22 ноября 2026*
+
+Собственный набор текстур и новый масштаб мира.
 
 ### Добавлено
 
@@ -140,7 +165,11 @@
   не читается как обнажённый под тёплым светом.
 - Декали вынесены отдельно от бесшовных тайлов; тёмные потёртости смягчены.
 
-## [0.1.0-alpha.1] - 2026-11-22
+## 0.1.0-alpha.1
+
+*22 ноября 2026*
+
+Первая играбельная альфа.
 
 ### Добавлено
 
@@ -151,14 +180,3 @@
 - Сохранение и продолжение игры.
 - Сгенерированные пиксельные звуки и процедурное освещение.
 - Headless-тесты игрового состояния и настройка экспорта.
-
-## Сравнения версий
-
-[Unreleased]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.5.0-alpha.1...HEAD
-[0.5.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.4.0-alpha.1...v0.5.0-alpha.1
-[0.4.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.3.2-alpha.1...v0.4.0-alpha.1
-[0.3.2-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.3.1-alpha.1...v0.3.2-alpha.1
-[0.3.1-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.3.0-alpha.1...v0.3.1-alpha.1
-[0.3.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.2.0-alpha.1...v0.3.0-alpha.1
-[0.2.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/commits/v0.2.0-alpha.1
-[0.1.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/releases

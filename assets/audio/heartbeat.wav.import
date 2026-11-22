@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://ckln8g8chnilq"
-path="res://.godot/imported/power.wav-09b38fccc79a26d668ad7b936d056017.sample"
+uid="uid://b4s2380888s1t"
+path="res://.godot/imported/heartbeat.wav-94c945c505205f24983e4700d22d5d9d.sample"
 
 [deps]
 
-source_file="res://audio/power.wav"
-dest_files=["res://.godot/imported/power.wav-09b38fccc79a26d668ad7b936d056017.sample"]
+source_file="res://assets/audio/heartbeat.wav"
+dest_files=["res://.godot/imported/heartbeat.wav-94c945c505205f24983e4700d22d5d9d.sample"]
 
 [params]
 

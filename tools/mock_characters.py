@@ -14,7 +14,7 @@ import mock_props as mp
 
 ROOT = Path(__file__).resolve().parent.parent
 TEX = ROOT / "assets" / "textures"
-OUT = ROOT / "assets" / "previews" / "batch3_mock.png"
+OUT = ROOT / "docs" / "previews" / "batch3_mock.png"
 
 
 def sprite(name: str, row: int, column: int, fw: int, fh: int) -> Image.Image:

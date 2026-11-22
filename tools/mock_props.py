@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
 TEX = ROOT / "assets" / "textures"
-OUT = ROOT / "assets" / "previews" / "batch2_mock.png"
+OUT = ROOT / "docs" / "previews" / "batch2_mock.png"
 W, H, TILE = 640, 360, 32
 
 

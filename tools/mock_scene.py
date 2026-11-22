@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
 TEX = ROOT / "assets" / "textures"
-OUT = ROOT / "assets" / "previews" / "batch1_mock.png"
+OUT = ROOT / "docs" / "previews" / "batch1_mock.png"
 W, H, TILE = 640, 360, 32
 
 

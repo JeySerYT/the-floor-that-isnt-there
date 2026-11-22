@@ -1,0 +1,13 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.wav binary
+*.ogg binary
+*.ttf binary
+*.otf binary
+
+*.tscn linguist-detectable=false
+*.tres linguist-detectable=false
+*.import linguist-detectable=false
+*.uid linguist-detectable=false

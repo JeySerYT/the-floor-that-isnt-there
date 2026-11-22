@@ -10,7 +10,7 @@ import wave
 from pathlib import Path
 
 RATE = 22050
-OUT = Path(__file__).resolve().parent.parent / "audio"
+OUT = Path(__file__).resolve().parent.parent / "assets" / "audio"
 random.seed(1313)
 
 

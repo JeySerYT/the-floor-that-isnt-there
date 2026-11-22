@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://cnma5f1y3g8oc"
-path="res://.godot/imported/stinger.wav-ccf880a95f3f231ea477942e72e9b6df.sample"
+uid="uid://ckln8g8chnilq"
+path="res://.godot/imported/power.wav-607ccda4148e8dc75cefb22a111ce8ed.sample"
 
 [deps]
 
-source_file="res://audio/stinger.wav"
-dest_files=["res://.godot/imported/stinger.wav-ccf880a95f3f231ea477942e72e9b6df.sample"]
+source_file="res://assets/audio/power.wav"
+dest_files=["res://.godot/imported/power.wav-607ccda4148e8dc75cefb22a111ce8ed.sample"]
 
 [params]
 

@@ -17,3 +17,7 @@ Thumbs.db
 # Python tooling
 __pycache__/
 *.pyc
+
+# Local release and worktree artifacts
+release-notes.md
+.worktrees/

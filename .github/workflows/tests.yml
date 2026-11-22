@@ -5,6 +5,9 @@ on:
     branches: [master]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,7 +20,5 @@ jobs:
           mv Godot_v4.7-stable_linux.x86_64 godot
           chmod +x godot
           ./godot --version
-      - name: Import resources
-        run: ./godot --headless --path . --import
       - name: Run tests
-        run: ./godot --headless --path . --script res://tests/test_runner.gd
+        run: GODOT=./godot tests/run_all.sh

@@ -18,7 +18,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 TEX = ROOT / "assets" / "textures"
-PREVIEW = ROOT / "assets" / "previews"
+PREVIEW = ROOT / "docs" / "previews"
 FONT_PATH = "/usr/share/fonts/TTF/DejaVuSansMono.ttf"
 
 # --- palette: cold, dirty hospital -----------------------------------------

@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://domd3hbp3j4sy"
-path="res://.godot/imported/ambient_hospital.wav-07382223c7a6f1f8812278f9e415604e.sample"
+path="res://.godot/imported/ambient_hospital.wav-7673b0d3cf4e742633994076bb07fb29.sample"
 
 [deps]
 
-source_file="res://audio/ambient_hospital.wav"
-dest_files=["res://.godot/imported/ambient_hospital.wav-07382223c7a6f1f8812278f9e415604e.sample"]
+source_file="res://assets/audio/ambient_hospital.wav"
+dest_files=["res://.godot/imported/ambient_hospital.wav-7673b0d3cf4e742633994076bb07fb29.sample"]
 
 [params]
 

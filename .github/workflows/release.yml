@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Тег релиза, например v0.5.0-alpha.1"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref_name }}
+
+      - name: Build release notes
+        run: |
+          version="${TAG#v}"
+          python3 scripts/release_notes.py "$version" > release-notes.md
+          printf '\nПолный список изменений — в [CHANGELOG](https://github.com/%s/blob/master/CHANGELOG.md).\n' \
+            "$GITHUB_REPOSITORY" >> release-notes.md
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${TAG#v}"
+          prerelease=()
+          case "$version" in
+            *-*) prerelease=(--prerelease) ;;
+          esac
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$version" \
+              --notes-file release-notes.md "${prerelease[@]}"
+          else
+            gh release create "$TAG" --title "$version" \
+              --notes-file release-notes.md --verify-tag "${prerelease[@]}"
+          fi

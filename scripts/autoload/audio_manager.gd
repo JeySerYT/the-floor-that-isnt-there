@@ -1,14 +1,14 @@
 extends Node
 
 const SOUND_PATHS := {
-	"menu": "res://audio/ambient_menu.wav",
-	"hospital": "res://audio/ambient_hospital.wav",
-	"step": "res://audio/step.wav",
-	"interact": "res://audio/interact.wav",
-	"pickup": "res://audio/pickup.wav",
-	"power": "res://audio/power.wav",
-	"stinger": "res://audio/stinger.wav",
-	"heartbeat": "res://audio/heartbeat.wav",
+	"menu": "res://assets/audio/ambient_menu.wav",
+	"hospital": "res://assets/audio/ambient_hospital.wav",
+	"step": "res://assets/audio/step.wav",
+	"interact": "res://assets/audio/interact.wav",
+	"pickup": "res://assets/audio/pickup.wav",
+	"power": "res://assets/audio/power.wav",
+	"stinger": "res://assets/audio/stinger.wav",
+	"heartbeat": "res://assets/audio/heartbeat.wav",
 }
 
 var _streams: Dictionary = {}
