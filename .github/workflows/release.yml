@@ -20,8 +20,6 @@ jobs:
       TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.tag || github.ref_name }}
 
       - name: Build release notes
         run: |
