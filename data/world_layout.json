@@ -888,7 +888,7 @@
 				184.0,
 				712.0
 			],
-			"absent_flag": "intro_note_read"
+			"absent_flag": "lobby_note_read"
 		},
 		{
 			"id": "reception_note",

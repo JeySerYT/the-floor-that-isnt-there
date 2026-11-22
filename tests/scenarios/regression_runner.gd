@@ -71,5 +71,13 @@ func _run() -> void:
 	await _wait(2)
 	_check(state.ending == "release", "release_ending")
 	_check(_main.state == "ending", "ending_state")
+
+	_main._cleanup_world()
+	_main._begin_session()
+	await _wait(3)
+	_check(_main.world.get_interaction("lobby_note") == null,
+		"lobby_note_not_repeated")
+	_check(_main.world.get_interaction("reception_note") == null,
+		"reception_note_not_repeated")
 	print("Regression: %d passed, %d failed" % [_passed, _failed])
 	quit(1 if _failed > 0 else 0)
