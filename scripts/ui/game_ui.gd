@@ -50,7 +50,10 @@ var _choice_body: Label
 var _choice_box: VBoxContainer
 var _ending_title: Label
 var _ending_body: RichTextLabel
+var _credits_button: Button
+var _credits: Control
 var _caught_flash: ColorRect
+var _transition_flash: ColorRect
 var _toast_tween: Tween
 var _objective_panel: PanelContainer
 var _inventory_panel: PanelContainer
@@ -76,6 +79,7 @@ func _ready() -> void:
 	_build_pause_panel()
 	_build_settings_panel()
 	_build_ending_panel()
+	_build_credits_panel()
 	UserSettings.changed.connect(_refresh_settings)
 	show_menu(GameState.has_save())
 
@@ -146,6 +150,7 @@ func show_menu(has_save: bool) -> void:
 	_pause.visible = false
 	_settings.visible = false
 	_ending.visible = false
+	_credits.visible = false
 	_continue_button.disabled = not has_save
 	_new_button.grab_focus()
 
@@ -158,6 +163,7 @@ func show_game() -> void:
 	_pause.visible = false
 	_settings.visible = false
 	_ending.visible = false
+	_credits.visible = false
 	_update_hud()
 
 
@@ -168,7 +174,7 @@ func set_objective(text: String) -> void:
 func set_inventory(items: Array[String]) -> void:
 	_inventory_icons["fuse"].visible = items.has("fuse")
 	_inventory_icons["lift_key"].visible = items.has("lift_key")
-	_inventory_icons["cassette"].visible = GameState.has_flag("tape_heard")
+	_inventory_icons["cassette"].visible = GameState.has_flag("tape_heard") or GameState.has_flag("tape_second_heard")
 	_inventory_icons["note"].visible = GameState.has_flag("ward_chart_read")
 
 
@@ -250,7 +256,7 @@ func hide_pause() -> void:
 	_pause.visible = false
 
 
-func show_ending(title: String, body: String) -> void:
+func show_ending(title: String, body: String, with_credits: bool = false) -> void:
 	_toast_panel.visible = false
 	if _toast_tween != null and _toast_tween.is_valid():
 		_toast_tween.kill()
@@ -258,12 +264,41 @@ func show_ending(title: String, body: String) -> void:
 	_choice.visible = false
 	_pause.visible = false
 	_settings.visible = false
+	_credits.visible = false
 	_ending_title.text = title
 	_ending_body.text = body
+	if _credits_button != null:
+		_credits_button.visible = with_credits
 	_ending.visible = true
 	var menu_button := _ending.find_child("Menu", true, false) as Button
 	if menu_button != null:
 		menu_button.grab_focus()
+
+
+func show_credits() -> void:
+	_ending.visible = false
+	_credits.visible = true
+	var back := _credits.find_child("Back", true, false) as Button
+	if back != null:
+		back.grab_focus()
+
+
+func hide_credits() -> void:
+	_credits.visible = false
+	_ending.visible = true
+
+
+func is_credits_open() -> bool:
+	return _credits.visible
+
+
+func play_transition() -> void:
+	_transition_flash.visible = true
+	_transition_flash.color = Color(0.0, 0.0, 0.0, 1.0)
+	var tween := create_tween()
+	tween.tween_interval(0.05)
+	tween.tween_property(_transition_flash, "color:a", 0.0, 0.32)
+	tween.tween_callback(func() -> void: _transition_flash.visible = false)
 
 
 func play_caught_effect() -> void:
@@ -402,6 +437,14 @@ func _build_game_hud() -> void:
 	_caught_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_caught_flash.visible = false
 	_game.add_child(_caught_flash)
+
+	_transition_flash = ColorRect.new()
+	_transition_flash.name = "TransitionFlash"
+	_transition_flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_transition_flash.color = Color(0.0, 0.0, 0.0, 0.0)
+	_transition_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_transition_flash.visible = false
+	_game.add_child(_transition_flash)
 
 
 func _add_inventory_slot(parent: Control, item_id: String, icon_texture: Texture2D) -> void:
@@ -707,7 +750,57 @@ func _build_ending_panel() -> void:
 	restart.name = "Restart"
 	restart.pressed.connect(func() -> void: ending_restart_requested.emit())
 	buttons.add_child(restart)
+	_credits_button = _make_button("Титры", 110)
+	_credits_button.name = "Credits"
+	_credits_button.visible = false
+	_credits_button.pressed.connect(show_credits)
+	buttons.add_child(_credits_button)
 	var menu := _make_button("В главное меню", 150)
+	menu.name = "Menu"
+	menu.pressed.connect(func() -> void: ending_menu_requested.emit())
+	buttons.add_child(menu)
+
+
+func _build_credits_panel() -> void:
+	_credits = _make_overlay("Credits")
+	var center := CenterContainer.new()
+	center.name = "Center"
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_credits.add_child(center)
+	var panel := _make_panel("paper")
+	panel.custom_minimum_size = Vector2(420, 0)
+	center.add_child(panel)
+	var box := VBoxContainer.new()
+	box.name = "VBox"
+	box.add_theme_constant_override("separation", 6)
+	panel.add_child(box)
+	var title := _label("ЭТАЖ, КОТОРОГО НЕТ", 20, Color(0.18, 0.13, 0.1))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0))
+	box.add_child(title)
+	var line := ColorRect.new()
+	line.color = Color(0.4, 0.34, 0.27, 0.45)
+	line.custom_minimum_size = Vector2(0, 2)
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(line)
+	var version := FileAccess.get_file_as_string("res://VERSION").strip_edges()
+	var body := _label(
+		"версия %s\n\nИстория, код, текстуры и звук —\nсобственная работа.\n\nСпасибо, что спустились.\n\nКОНЕЦ" % version,
+		12, Color(0.22, 0.18, 0.14))
+	body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body.custom_minimum_size = Vector2(360, 150)
+	body.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	body.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0))
+	box.add_child(body)
+	var buttons := HBoxContainer.new()
+	buttons.add_theme_constant_override("separation", 6)
+	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_child(buttons)
+	var back := _make_button("Назад", 130)
+	back.name = "Back"
+	back.pressed.connect(hide_credits)
+	buttons.add_child(back)
+	var menu := _make_button("В главное меню", 170)
 	menu.name = "Menu"
 	menu.pressed.connect(func() -> void: ending_menu_requested.emit())
 	buttons.add_child(menu)

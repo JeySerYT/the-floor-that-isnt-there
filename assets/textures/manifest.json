@@ -4,7 +4,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
   ],
   "assets": [
     {
@@ -1038,6 +1039,78 @@
       "tileable": false,
       "batch": 4,
       "description": "Титульный фон: коридор с дверью, лампой и фигурой в глубине"
+    },
+    {
+      "id": "floor_archive",
+      "file": "assets/textures/floors/floor_archive.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": true,
+      "batch": 5,
+      "description": "Пол архива: пыльный кафель и бумаги"
+    },
+    {
+      "id": "floor_boiler",
+      "file": "assets/textures/floors/floor_boiler.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": true,
+      "batch": 5,
+      "description": "Пол котельной: ржавчина и сырость"
+    },
+    {
+      "id": "prop_shelf",
+      "file": "assets/textures/furniture/prop_shelf.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 5,
+      "description": "Стеллаж архива с папками"
+    },
+    {
+      "id": "prop_boiler_tank",
+      "file": "assets/textures/devices/prop_boiler_tank.png",
+      "size": [
+        48,
+        64
+      ],
+      "category": "devices",
+      "tileable": false,
+      "batch": 5,
+      "description": "Ржавый бак котельной"
+    },
+    {
+      "id": "prop_stairs",
+      "file": "assets/textures/furniture/prop_stairs.png",
+      "size": [
+        64,
+        48
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 5,
+      "description": "Лестница вниз с перилами"
+    },
+    {
+      "id": "prop_collapse",
+      "file": "assets/textures/barriers/prop_collapse.png",
+      "size": [
+        96,
+        48
+      ],
+      "category": "barriers",
+      "tileable": false,
+      "batch": 5,
+      "description": "Обрушение: бетон и арматура"
     }
   ]
 }

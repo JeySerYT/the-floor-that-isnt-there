@@ -71,6 +71,12 @@ func reset_to_home() -> void:
 	_chasing = false
 
 
+func set_home(pos: Vector2) -> void:
+	_home = pos
+	_wander_target = pos
+	_pause_timer = 0.0
+
+
 static func sight_range_for(flashlight_on: bool) -> float:
 	return SIGHT_RANGE if flashlight_on else SIGHT_RANGE_DARK
 

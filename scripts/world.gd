@@ -2,8 +2,9 @@ class_name HospitalWorld
 extends Node2D
 
 signal caught_player
+signal room_entered(index: int)
 
-const MAP_SIZE := Vector2(1536, 960)
+const MAP_SIZE := Vector2(1536, 1280)
 const TILE := 32
 
 const ROOMS := [
@@ -14,13 +15,16 @@ const ROOMS := [
 	{"title": "ХОЛЛ", "rect": Rect2(32, 544, 608, 384), "label": Vector2(56, 596), "floor": "hall"},
 	{"title": "МОРГ", "rect": Rect2(672, 544, 288, 384), "label": Vector2(696, 596), "floor": "morgue"},
 	{"title": "ЛИФТОВОЙ ХОЛЛ", "rect": Rect2(992, 544, 512, 384), "label": Vector2(1016, 596), "floor": "lift"},
+	{"title": "ПОДВАЛ", "rect": Rect2(32, 960, 1472, 128), "label": Vector2(56, 1012), "floor": "basement"},
+	{"title": "АРХИВ", "rect": Rect2(32, 1120, 544, 128), "label": Vector2(56, 1172), "floor": "archive"},
+	{"title": "КОТЕЛЬНАЯ", "rect": Rect2(608, 1120, 448, 128), "label": Vector2(632, 1172), "floor": "boiler"},
 ]
 
 const WALLS := [
 	Rect2(0, 0, 1536, 32),
-	Rect2(0, 928, 1536, 32),
-	Rect2(0, 0, 32, 960),
-	Rect2(1504, 0, 32, 960),
+	Rect2(0, 1248, 1536, 32),
+	Rect2(0, 0, 32, 1280),
+	Rect2(1504, 0, 32, 1280),
 	Rect2(640, 32, 32, 288),
 	Rect2(960, 32, 32, 288),
 	Rect2(32, 320, 256, 32),
@@ -33,6 +37,14 @@ const WALLS := [
 	Rect2(1248, 512, 256, 32),
 	Rect2(640, 544, 32, 384),
 	Rect2(960, 544, 32, 384),
+	Rect2(0, 928, 288, 32),
+	Rect2(352, 928, 1184, 32),
+	Rect2(32, 1088, 256, 32),
+	Rect2(352, 1088, 416, 32),
+	Rect2(832, 1088, 256, 32),
+	Rect2(1088, 1088, 416, 32),
+	Rect2(576, 1120, 32, 128),
+	Rect2(1056, 1120, 32, 128),
 ]
 
 const FLOOR_CORRIDOR_A := preload("res://assets/textures/floors/floor_corridor_a.png")
@@ -44,6 +56,8 @@ const FLOOR_GRATE := preload("res://assets/textures/floors/floor_grate.png")
 const FLOOR_LOBBY := preload("res://assets/textures/floors/floor_lobby.png")
 const FLOOR_MORGUE := preload("res://assets/textures/floors/floor_morgue.png")
 const FLOOR_WARD := preload("res://assets/textures/floors/floor_ward.png")
+const FLOOR_ARCHIVE := preload("res://assets/textures/floors/floor_archive.png")
+const FLOOR_BOILER := preload("res://assets/textures/floors/floor_boiler.png")
 
 const WALL_CAP := preload("res://assets/textures/walls/wall_cap.png")
 const WALL_PIPE := preload("res://assets/textures/walls/wall_pipe.png")
@@ -75,6 +89,10 @@ const PROP_WHEELCHAIR := preload("res://assets/textures/devices/prop_wheelchair.
 const PROP_ELEVATOR_PANEL := preload("res://assets/textures/devices/prop_elevator_panel.png")
 const PROP_BOARDED_DOOR := preload("res://assets/textures/barriers/prop_boarded_door.png")
 const PROP_OBSERVATION_WINDOW := preload("res://assets/textures/barriers/prop_observation_window.png")
+const PROP_SHELF := preload("res://assets/textures/furniture/prop_shelf.png")
+const PROP_STAIRS := preload("res://assets/textures/furniture/prop_stairs.png")
+const PROP_BOILER_TANK := preload("res://assets/textures/devices/prop_boiler_tank.png")
+const PROP_COLLAPSE := preload("res://assets/textures/barriers/prop_collapse.png")
 
 const DECAL_BLOOD_POOL := preload("res://assets/textures/decals/decal_blood_pool.png")
 const DECAL_BLOOD_SMEAR := preload("res://assets/textures/decals/decal_blood_smear.png")
@@ -110,6 +128,15 @@ const HALL_FLOORS := [
 const LIFT_FLOORS := [
 	FLOOR_LOBBY, FLOOR_CORRIDOR_A, FLOOR_CORRIDOR_B,
 ]
+const BASEMENT_FLOORS := [
+	FLOOR_GRATE, FLOOR_CORRIDOR_C, FLOOR_CORRIDOR_WET, FLOOR_MORGUE,
+]
+const ARCHIVE_FLOORS := [
+	FLOOR_ARCHIVE,
+]
+const BOILER_FLOORS := [
+	FLOOR_BOILER, FLOOR_BOILER, FLOOR_BOILER, FLOOR_GRATE,
+]
 
 const DOORS := [
 	{"rect": Rect2(288, 320, 64, 32), "frame": DOOR_WARD_FRAME,
@@ -124,6 +151,12 @@ const DOORS := [
 		"panels": [DOOR_MORGUE_PANEL], "label": "МОРГ"},
 	{"rect": Rect2(1184, 512, 64, 32), "frame": DOOR_WARD_FRAME,
 		"panels": [DOOR_WARD_PANEL], "label": "ЛИФТ"},
+	{"rect": Rect2(288, 1088, 64, 32), "frame": DOOR_WARD_FRAME,
+		"panels": [DOOR_WARD_PANEL], "label": "АРХИВ"},
+	{"rect": Rect2(768, 1088, 64, 32), "frame": DOOR_MORGUE_FRAME,
+		"panels": [DOOR_MORGUE_PANEL], "label": "КОТЕЛЬНАЯ"},
+	{"rect": Rect2(832, 1216, 64, 32), "frame": DOOR_MORGUE_FRAME,
+		"panels": [DOOR_MORGUE_PANEL], "label": "−1", "auto": false, "label_above": true},
 ]
 
 const PROPS := [
@@ -146,8 +179,16 @@ const PROPS := [
 	{"texture": PROP_WAITING_BENCH, "pos": Vector2(64, 640)},
 	{"texture": PROP_WAITING_BENCH, "pos": Vector2(64, 760)},
 	{"texture": PROP_WHEELCHAIR, "pos": Vector2(360, 820)},
-	{"texture": PROP_BOARDED_DOOR, "pos": Vector2(280, 896)},
+	{"texture": PROP_BOARDED_DOOR, "pos": Vector2(280, 896), "id": "stairs_board"},
+	{"texture": PROP_STAIRS, "pos": Vector2(288, 880), "id": "stairs_sprite", "solid": false, "hidden": true},
 	{"texture": PROP_ELEVATOR_PANEL, "pos": Vector2(1468, 764), "solid": false},
+	{"texture": PROP_SHELF, "pos": Vector2(96, 1216)},
+	{"texture": PROP_SHELF, "pos": Vector2(192, 1216)},
+	{"texture": PROP_SHELF, "pos": Vector2(400, 1216)},
+	{"texture": PROP_SHELF, "pos": Vector2(496, 1216)},
+	{"texture": PROP_BOILER_TANK, "pos": Vector2(616, 1140)},
+	{"texture": PROP_BOILER_TANK, "pos": Vector2(992, 1168)},
+	{"texture": PROP_COLLAPSE, "pos": Vector2(1160, 1010), "solid": false},
 ]
 
 const DECALS := [
@@ -157,6 +198,10 @@ const DECALS := [
 	{"texture": DECAL_BLOOD_SMEAR, "pos": Vector2(592, 468)},
 	{"texture": DECAL_BLOOD_POOL, "pos": Vector2(232, 560)},
 	{"texture": DECAL_CRACK, "pos": Vector2(1330, 700)},
+	{"texture": DECAL_MOLD, "pos": Vector2(72, 1136)},
+	{"texture": DECAL_STAIN, "pos": Vector2(342, 1150)},
+	{"texture": DECAL_WALL_CRACK, "pos": Vector2(622, 1140)},
+	{"texture": DECAL_CRACK, "pos": Vector2(1180, 1052)},
 ]
 
 const ITEM_SPAWNS := [
@@ -166,6 +211,12 @@ const ITEM_SPAWNS := [
 	{"id": "key", "flag": "key_taken", "texture": ITEM_KEY, "pos": Vector2(832, 726)},
 	{"id": "tape", "flag": "tape_heard", "texture": ITEM_CASSETTE, "pos": Vector2(656, 462)},
 	{"id": "ward_chart", "flag": "ward_chart_read", "texture": ITEM_NOTE, "pos": Vector2(1392, 244)},
+	{"id": "archive_note_1", "flag": "archive_note_1", "texture": ITEM_NOTE, "pos": Vector2(96, 1200)},
+	{"id": "archive_note_2", "flag": "archive_note_2", "texture": ITEM_NOTE, "pos": Vector2(192, 1200)},
+	{"id": "archive_note_3", "flag": "archive_note_3", "texture": ITEM_NOTE, "pos": Vector2(400, 1200)},
+	{"id": "basement_note", "flag": "basement_note", "texture": ITEM_NOTE, "pos": Vector2(1112, 1032)},
+	{"id": "boiler_note", "flag": "boiler_note", "texture": ITEM_NOTE, "pos": Vector2(896, 1200)},
+	{"id": "tape_second", "flag": "tape_second_heard", "texture": ITEM_CASSETTE, "pos": Vector2(688, 1184)},
 ]
 
 const ELEVATOR_RECT := Rect2(1400, 612, 100, 140)
@@ -231,6 +282,7 @@ class WallBand:
 
 
 var power_on := false
+var boiler_blackout := false
 var interactions: Array[Interaction] = []
 var enemy: Stalker
 var _player: Player
@@ -239,7 +291,10 @@ var _flicker_lights: Array[PointLight2D] = []
 var _stains: Array[Dictionary] = []
 var _doors: Array[Dictionary] = []
 var _items: Dictionary = {}
+var _props: Dictionary = {}
 var _fog: RoomFog
+var _stairs_blocker: CollisionShape2D
+var _current_room := -1
 var _time := 0.0
 
 
@@ -250,14 +305,17 @@ func _ready() -> void:
 	_build_stains()
 	if GameState.has_flag("power_on"):
 		power_on = true
+	boiler_blackout = GameState.has_flag("boiler_scene_seen")
 	_build_walls()
 	_build_doors()
 	_build_props()
+	_build_stairs()
 	_build_items()
 	_build_interactions()
 	_build_fog()
 	_build_darkness()
 	if power_on:
+		_unlock_stairs(false)
 		_add_power_lights()
 		_spawn_enemy()
 	queue_redraw()
@@ -316,9 +374,43 @@ func set_power_on() -> void:
 	if power_on:
 		return
 	power_on = true
+	_unlock_stairs(true)
 	_add_power_lights()
 	_spawn_enemy()
 	queue_redraw()
+
+
+func _build_stairs() -> void:
+	var body := StaticBody2D.new()
+	body.name = "StairsBlocker"
+	body.collision_layer = 1
+	body.collision_mask = 0
+	add_child(body)
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(64, 32)
+	_stairs_blocker = CollisionShape2D.new()
+	_stairs_blocker.shape = shape
+	_stairs_blocker.position = Vector2(320, 944)
+	body.add_child(_stairs_blocker)
+
+
+func _unlock_stairs(announce: bool) -> void:
+	if _props.has("stairs_board"):
+		(_props["stairs_board"] as Sprite2D).visible = false
+	if _props.has("stairs_sprite"):
+		(_props["stairs_sprite"] as Sprite2D).visible = true
+	var stairs := get_interaction("stairs_down")
+	if stairs != null:
+		stairs.prompt = "Спуститься в подвал"
+	elif announce:
+		_add_interaction("stairs_down", "Спуститься в подвал", "stairs", Vector2(320, 910))
+
+
+func set_boiler_blackout() -> void:
+	boiler_blackout = true
+	for light: PointLight2D in _flicker_lights:
+		if light.position.x > 600.0 and light.position.y > 1100.0:
+			light.enabled = false
 
 
 func refresh_items() -> void:
@@ -352,7 +444,7 @@ func _build_walls() -> void:
 		band.cap = WALL_CAP
 		band.pipe = WALL_PIPE
 		band.faces = [WALL_FACE_A, WALL_FACE_B, WALL_FACE_C]
-		band.pipe_column = 640
+		band.pipe_column = 608
 		band.position = Vector2(0, wall.end.y)
 		add_child(band)
 
@@ -432,6 +524,8 @@ func _build_doors() -> void:
 
 func _update_doors() -> void:
 	for door: Dictionary in _doors:
+		if not bool(door.get("auto", true)):
+			continue
 		var distance := 9999.0
 		if is_instance_valid(_player):
 			distance = _player.global_position.distance_to(door["center"])
@@ -476,6 +570,9 @@ func _build_props() -> void:
 		sprite.texture = texture
 		sprite.offset = Vector2(0, -size.y * 0.5)
 		base.add_child(sprite)
+		if prop.has("id"):
+			_props[str(prop["id"])] = sprite
+			sprite.visible = not bool(prop.get("hidden", false))
 		if not bool(prop.get("solid", true)):
 			continue
 		if size.x <= 6.0 or size.y <= 6.0:
@@ -528,15 +625,22 @@ func _mark_current_room() -> void:
 	if _fog == null or not is_instance_valid(_player):
 		return
 	var point := _player.global_position
-	for index in ROOMS.size():
-		var rect: Rect2 = ROOMS[index]["rect"]
-		if not rect.has_point(point):
-			continue
-		if not _fog.is_visited(index):
-			_fog.set_visited(index, true)
-			GameState.set_flag("visited_room_%d" % index)
-			queue_redraw()
+	var index := -1
+	for room_index in ROOMS.size():
+		var rect: Rect2 = ROOMS[room_index]["rect"]
+		if rect.has_point(point):
+			index = room_index
+			break
+	if index == _current_room:
 		return
+	_current_room = index
+	if index < 0:
+		return
+	if not _fog.is_visited(index):
+		_fog.set_visited(index, true)
+		GameState.set_flag("visited_room_%d" % index)
+		queue_redraw()
+	room_entered.emit(index)
 
 
 func _build_stains() -> void:
@@ -573,6 +677,22 @@ func _build_interactions() -> void:
 	_add_interaction("elevator", "Вызвать лифт", "elevator", Vector2(1456, 764))
 	_add_interaction("cover_cabinet", "Спрятаться в шкаф", "cover", Vector2(852, 116))
 	_add_interaction("cover_bed", "Спрятаться под кровать", "cover", Vector2(1088, 228))
+	var stairs_prompt := "Спуститься в подвал" if power_on else "Осмотреть дверь на лестницу"
+	_add_interaction("stairs_down", stairs_prompt, "stairs", Vector2(320, 910))
+	_add_interaction("stairs_up", "Подняться в холл", "stairs", Vector2(320, 1016))
+	if not GameState.has_flag("archive_note_1"):
+		_add_interaction("archive_note_1", "Прочитать опись архива", "note", Vector2(104, 1208))
+	if not GameState.has_flag("archive_note_2"):
+		_add_interaction("archive_note_2", "Прочитать форму согласия", "note", Vector2(200, 1208))
+	if not GameState.has_flag("archive_note_3"):
+		_add_interaction("archive_note_3", "Прочитать черновик заявления", "note", Vector2(408, 1208))
+	if not GameState.has_flag("basement_note"):
+		_add_interaction("basement_note", "Прочитать служебную записку", "note", Vector2(1120, 1040))
+	if not GameState.has_flag("boiler_note"):
+		_add_interaction("boiler_note", "Прочитать журнал котельной", "note", Vector2(904, 1208))
+	if not GameState.has_flag("tape_second_heard"):
+		_add_interaction("tape_second", "Прослушать кассету", "note", Vector2(696, 1192))
+	_add_interaction("boiler_door", "Дверь «−1»", "stairs", Vector2(864, 1216))
 
 
 func _add_interaction(id: String, prompt: String, kind: String, pos: Vector2) -> void:
@@ -619,7 +739,12 @@ func _add_power_lights() -> void:
 	var positions := [
 		Vector2(320, 372), Vector2(840, 372), Vector2(1380, 372),
 		Vector2(320, 680), Vector2(840, 680), Vector2(1380, 680),
+		Vector2(160, 1024), Vector2(560, 1024), Vector2(960, 1024), Vector2(1200, 1024),
+		Vector2(200, 1184), Vector2(440, 1184),
 	]
+	if not boiler_blackout:
+		positions.append(Vector2(760, 1184))
+		positions.append(Vector2(1000, 1184))
 	for pos: Vector2 in positions:
 		var light := PointLight2D.new()
 		light.name = "CeilingLight"
@@ -669,6 +794,12 @@ func _floor_textures(kind: String) -> Array:
 			return HALL_FLOORS
 		"lift":
 			return LIFT_FLOORS
+		"basement":
+			return BASEMENT_FLOORS
+		"archive":
+			return ARCHIVE_FLOORS
+		"boiler":
+			return BOILER_FLOORS
 		_:
 			return CORRIDOR_FLOORS
 
@@ -720,6 +851,10 @@ func _draw_door_thresholds() -> void:
 			x += TILE
 			index += 1
 		draw_rect(Rect2(rect.position.x, rect.end.y - 3, rect.size.x, 3), Color(0, 0, 0, 0.32))
+	# stairwell opening between the hall and the basement
+	for index in 2:
+		var texture: Texture2D = FLOOR_CORRIDOR_A if index % 2 == 0 else FLOOR_CORRIDOR_B
+		draw_texture_rect(texture, Rect2(288 + index * TILE, 928, TILE, TILE), false)
 
 
 func _draw_wall_shadow(wall: Rect2) -> void:
@@ -767,7 +902,8 @@ func _draw_door_labels() -> void:
 		var text: String = door["label"]
 		var text_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8)
 		var width := maxf(text_size.x + 10.0, 28.0)
-		var pos := Vector2(rect.get_center().x - width * 0.5, rect.end.y + 1)
+		var y: float = rect.position.y - 11.0 if bool(door.get("label_above", false)) else rect.end.y + 1.0
+		var pos := Vector2(rect.get_center().x - width * 0.5, y)
 		draw_rect(Rect2(pos, Vector2(width, 11)), Color(0.055, 0.07, 0.07, 0.88))
 		draw_rect(Rect2(pos, Vector2(width, 11)), Color(0.28, 0.32, 0.3, 0.9), false, 1.0)
 		draw_string(font, pos + Vector2(5, 8), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8,

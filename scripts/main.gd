@@ -97,6 +97,104 @@ const WINDOW_TEXT := """За стеклом стоит Лера.
 
 Если разбить стекло, она сможет выйти."""
 
+const ARCHIVE_NOTE_1 := """[color=#9a6257]Архив. Опись 1998–2004.[/color]
+
+Дело №13 не закрыто.
+В графе «пациент» — Лера Н.
+В графе «врач» — пусто.
+
+На обороте, чужой рукой:
+[color=#8a5a3c]«Этаж не существует.
+Он существует, пока в него верят».[/color]"""
+
+const ARCHIVE_NOTE_2 := """[color=#9a6257]Форма добровольного согласия.[/color]
+
+Я, Марк В., согласен на процедуру
+«удержание памяти».
+
+Подпись: [color=#a02a24]Марк В.[/color]
+Дата: 12 декабря, 03:12.
+
+Ниже, другим почерком:
+[color=#8a5a3c]«Он подписал сам.
+Никто его не заставлял».[/color]"""
+
+const ARCHIVE_NOTE_3 := """[color=#9a6257]Черновик заявления. Не отправлено.[/color]
+
+«Я не хочу, чтобы он уходил.
+Если этаж умеет держать,
+пусть держит».
+
+Подпись смазана. Внизу — капля крови
+и отпечаток маленькой ладони."""
+
+const BASEMENT_NOTE := """[color=#9a6257]Служебная записка. Обход подвала.[/color]
+
+В 03:00 свет в котельной гаснет сам.
+Не ищите причину.
+Не спускайтесь вдвоём.
+
+Если услышите, как кто-то называет
+ваше имя, — не отвечайте."""
+
+const BOILER_NOTE := """[color=#9a6257]Журнал котельной. Последняя запись.[/color]
+
+Давление в норме.
+Температура в норме.
+В коридоре стоит женщина.
+
+Она спрашивает, где Марк.
+Я сказал, что не знаю.
+
+[color=#8a5a3c]Я соврал.[/color]"""
+
+const TAPE_SECOND_NOTE := """[color=#9a6257]Кассета без номера. Сторона Б.[/color]
+
+[i]Голос Леры, очень близко к микрофону.[/i]
+
+«Марк, если ты это слышишь —
+я не прячу тебя.
+Я держу этаж, чтобы ты не ушёл туда,
+где тебя нет.
+
+Прости меня. И не спускайся на −1.
+Там нет меня. Там только то,
+что от меня осталось».
+
+[i]Щелчок. Плёнка тянется дальше.[/i]"""
+
+const BOILER_SCENE_TEXT := """[color=#9a6257]Свет гаснет.[/color]
+
+Котёл остывает с долгим вздохом.
+В темноте кто-то поправляет халат.
+
+Голос у двери:
+[color=#b78968]«Ты всё-таки пришёл».[/color]
+
+Это не Лера."""
+
+const BOILER_DOOR_TEXT := """Дверь открывается внутрь.
+За ней — ступени, которых нет на плане.
+
+Снизу тянет холодом
+и чем-то знакомым."""
+
+const TRUTH_ENDING := """[center]Дверь «−1» открывается вниз.[/center]
+
+Ступени считают тебя.
+На последней — стол, лампа и папка
+с твоим именем.
+
+В папке — согласие. Подпись твоя.
+Внизу приписка Леры:
+[color=#b78968]«Я держала тебя, пока могла».[/color]
+
+Этаж не отпускает. Он просто
+перестаёт притворяться больницей.
+
+Ты слышишь, как за спиной
+закрывается дверь. И ещё одну."""
+
 const ELEVATOR_TEXT := """Служебный лифт вздрагивает.
 
 Кнопки нет. Кабина уже знает, куда ехать.
@@ -183,6 +281,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		_toggle_fullscreen()
 		get_viewport().set_input_as_handled()
 		return
+	if state == "ending" and ui.is_credits_open() and event.is_action_pressed("pause"):
+		ui.hide_credits()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("pause") and ui.is_settings_open():
 		ui.close_settings()
 		get_viewport().set_input_as_handled()
@@ -249,6 +351,7 @@ func _begin_session() -> void:
 	_save_timer = 0.0
 	world = WORLD_SCENE.instantiate() as HospitalWorld
 	add_child(world)
+	world.room_entered.connect(_on_room_entered)
 	player = PLAYER_SCENE.instantiate() as Player
 	world.add_child(player)
 	player.global_position = GameState.checkpoint
@@ -365,7 +468,7 @@ func _interact(target: Interaction) -> void:
 			target.enabled = false
 			GameState.set_flag("ward_chart_read")
 			if GameState.has_flag("key_taken"):
-				GameState.set_objective("Вернуться к смотровому стеклу в палате 13 или вызвать лифт.")
+				GameState.set_objective("Спуститься в подвал по лестнице в холле или вернуться к смотровому стеклу.")
 			else:
 				GameState.set_objective("Найти служебный ключ в морге.")
 			ui.set_objective(GameState.objective)
@@ -377,6 +480,29 @@ func _interact(target: Interaction) -> void:
 			_try_elevator()
 		"cover_cabinet", "cover_bed":
 			_toggle_cover(target)
+		"stairs_down":
+			_try_stairs_down()
+		"stairs_up":
+			_use_stairs_up()
+		"archive_note_1":
+			_read_collectible(target, "archive_note_1", "ОПИСЬ АРХИВА", ARCHIVE_NOTE_1)
+		"archive_note_2":
+			_read_collectible(target, "archive_note_2", "ФОРМА СОГЛАСИЯ", ARCHIVE_NOTE_2)
+		"archive_note_3":
+			_read_collectible(target, "archive_note_3", "ЧЕРНОВИК ЗАЯВЛЕНИЯ", ARCHIVE_NOTE_3)
+		"basement_note":
+			_read_collectible(target, "basement_note", "СЛУЖЕБНАЯ ЗАПИСКА", BASEMENT_NOTE)
+		"boiler_note":
+			_read_collectible(target, "boiler_note", "ЖУРНАЛ КОТЕЛЬНОЙ", BOILER_NOTE)
+		"tape_second":
+			target.enabled = false
+			GameState.set_flag("tape_second_heard")
+			AudioManager.play_sfx("stinger", -12.0, 0.03)
+			_autosave()
+			_check_truth_progress()
+			_show_note("КАССЕТА. СТОРОНА Б", TAPE_SECOND_NOTE)
+		"boiler_door":
+			_try_boiler_door()
 
 
 func _toggle_cover(target: Interaction) -> void:
@@ -414,6 +540,94 @@ func _toggle_flashlight() -> void:
 	if not player.flashlight_on and not GameState.has_flag("flashlight_hint_seen"):
 		GameState.set_flag("flashlight_hint_seen")
 		ui.show_toast("Фонарь выключен: тебя хуже видно, но и ты видишь меньше.")
+
+
+func _read_collectible(target: Interaction, flag: String, title: String, body: String) -> void:
+	if target != null:
+		target.enabled = false
+	GameState.set_flag(flag)
+	AudioManager.play_sfx("interact", -12.0)
+	_autosave()
+	_check_truth_progress()
+	_show_note(title, body)
+
+
+func _check_truth_progress() -> void:
+	if not is_instance_valid(player):
+		return
+	if GameState.is_truth_unlocked():
+		if not GameState.has_flag("truth_ready_announced"):
+			GameState.set_flag("truth_ready_announced")
+			ui.show_toast("Все записи собраны. Дверь «−1» в котельной открыта.")
+		GameState.set_objective("Открыть дверь «−1» в котельной или спуститься на −1 в лифте.")
+	else:
+		GameState.set_objective("Обыскать архив и котельную: пять записок и вторая кассета.")
+	ui.set_objective(GameState.objective)
+	ui.set_inventory(GameState.inventory)
+
+
+func _try_stairs_down() -> void:
+	if not world.power_on:
+		_show_note("ЛЕСТНИЦА", "Дверь заколочена, а замок обесточен.\n\nБез питания её не открыть.")
+		return
+	ui.play_transition()
+	AudioManager.play_sfx("power", -14.0)
+	player.teleport_to(Vector2(320, 1016))
+	GameState.set_flag("basement_visited")
+	GameState.set_checkpoint(Vector2(320, 1016))
+	if not GameState.is_truth_unlocked():
+		GameState.set_objective("Обыскать архив и котельную: пять записок и вторая кассета.")
+	ui.set_objective(GameState.objective)
+	_autosave()
+
+
+func _use_stairs_up() -> void:
+	ui.play_transition()
+	AudioManager.play_sfx("step", -18.0)
+	player.teleport_to(Vector2(320, 904))
+	GameState.set_checkpoint(Vector2(320, 904))
+	_autosave()
+
+
+func _on_room_entered(index: int) -> void:
+	if state != "playing" or not is_instance_valid(world) or not is_instance_valid(player):
+		return
+	if index != 9 or not world.power_on:
+		return
+	if GameState.has_flag("boiler_scene_seen"):
+		return
+	_trigger_boiler_scene()
+
+
+func _trigger_boiler_scene() -> void:
+	GameState.set_flag("boiler_scene_seen")
+	world.set_boiler_blackout()
+	player.set_flashlight(false)
+	ui.set_status(false, false, false)
+	if is_instance_valid(world.enemy):
+		world.enemy.set_home(Vector2(800, 1096))
+		world.enemy.global_position = Vector2(800, 1096)
+		world.enemy.investigate(player.global_position, 6.0)
+	if GameState.is_truth_unlocked():
+		GameState.set_objective("Открыть дверь «−1» в котельной.")
+	else:
+		GameState.set_objective("Обыскать архив и котельную: пять записок и вторая кассета.")
+	ui.set_objective(GameState.objective)
+	AudioManager.play_sfx("stinger", -6.0, 0.01)
+	_autosave()
+	_show_note("СВЕТ ГАСНЕТ", BOILER_SCENE_TEXT)
+
+
+func _try_boiler_door() -> void:
+	if not GameState.is_truth_unlocked():
+		_show_note("ДВЕРЬ «−1»", "Ржавая дверь без ручки.\n\nЗамок щёлкает, но не открывается.\nБудто ждёт, пока ты вспомнишь всё.")
+		return
+	_choice_context = "boiler_door"
+	state = "choice"
+	_nearest = null
+	ui.set_prompt("")
+	ui.show_choice("ДВЕРЬ «−1»", BOILER_DOOR_TEXT, ["Спуститься", "Отойти"])
+	get_tree().paused = true
 
 
 func _collect_fuse(target: Interaction) -> void:
@@ -455,7 +669,7 @@ func _collect_key(target: Interaction) -> void:
 	target.enabled = false
 	GameState.set_flag("key_taken")
 	if GameState.has_flag("ward_chart_read"):
-		GameState.set_objective("Вернуться к смотровому стеклу в палате 13 или вызвать лифт.")
+		GameState.set_objective("Спуститься в подвал по лестнице в холле или вернуться к смотровому стеклу.")
 	else:
 		GameState.set_objective("Прочитать карту наблюдения в палате 13.")
 	ui.set_inventory(GameState.inventory)
@@ -494,7 +708,13 @@ func _try_elevator() -> void:
 	state = "choice"
 	_nearest = null
 	ui.set_prompt("")
-	ui.show_choice("СЛУЖЕБНЫЙ ЛИФТ", ELEVATOR_TEXT, ["Войти в лифт", "Отойти"])
+	var body := ELEVATOR_TEXT
+	var options: Array[String] = ["Войти в лифт"]
+	if GameState.is_truth_unlocked():
+		body += "\n\nПод панелью горит кнопка «−1»."
+		options.append("Спуститься на −1")
+	options.append("Отойти")
+	ui.show_choice("СЛУЖЕБНЫЙ ЛИФТ", body, options)
 	get_tree().paused = true
 
 
@@ -512,7 +732,13 @@ func _on_choice_selected(index: int) -> void:
 	if context == "window":
 		_show_ending("release")
 	elif context == "elevator":
-		_show_ending("escape")
+		if index == 0:
+			_show_ending("escape")
+		elif index == 1 and GameState.is_truth_unlocked():
+			_show_ending("truth")
+	elif context == "boiler_door":
+		if index == 0:
+			_show_ending("truth")
 
 
 func _close_choice() -> void:
@@ -534,6 +760,9 @@ func _show_ending(ending_id: String) -> void:
 	if ending_id == "escape":
 		AudioManager.play_sfx("stinger", -8.0)
 		ui.show_ending("ЛИФТ ИДЁТ ВНИЗ", ESCAPE_ENDING)
+	elif ending_id == "truth":
+		AudioManager.play_sfx("heartbeat", -4.0)
+		ui.show_ending("ПРАВДА", TRUTH_ENDING, true)
 	else:
 		AudioManager.play_sfx("heartbeat", -4.0)
 		ui.show_ending("ЭТАЖ, КОТОРЫЙ ДЫШИТ", RELEASE_ENDING)

@@ -7,6 +7,10 @@ const SAVE_VERSION := 3
 const WORLD_SCALE := 2
 const START_OBJECTIVE := "Подойти к стойке регистратуры и открыть журнал приёма."
 const START_CHECKPOINT := Vector2(160.0, 840.0)
+const TRUTH_NOTES := [
+	"archive_note_1", "archive_note_2", "archive_note_3",
+	"basement_note", "boiler_note",
+]
 
 var flags: Dictionary = {}
 var inventory: Array[String] = []
@@ -70,7 +74,11 @@ func resolve_objective() -> String:
 	if has_flag("power_on"):
 		if has_flag("key_taken"):
 			if has_flag("ward_chart_read"):
-				return "Вернуться к смотровому стеклу в палате 13 или вызвать лифт."
+				if is_truth_unlocked():
+					return "Открыть дверь «−1» в котельной или спуститься на −1 в лифте."
+				if has_flag("basement_visited"):
+					return "Обыскать архив и котельную: пять записок и вторая кассета."
+				return "Спуститься в подвал по лестнице в холле."
 			return "Прочитать карту наблюдения в палате 13."
 		return "Найти служебный ключ в морге."
 	if has_flag("fuse_taken"):
@@ -78,6 +86,15 @@ func resolve_objective() -> String:
 	if has_flag("reception_note_read"):
 		return "Взять предохранитель из картотеки в приёмном покое."
 	return START_OBJECTIVE
+
+
+func is_truth_unlocked() -> bool:
+	if not has_flag("tape_heard") or not has_flag("tape_second_heard"):
+		return false
+	for flag: String in TRUTH_NOTES:
+		if not has_flag(flag):
+			return false
+	return true
 
 
 func set_checkpoint(pos: Vector2) -> void:

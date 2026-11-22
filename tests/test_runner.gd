@@ -14,6 +14,8 @@ func _initialize() -> void:
 	test_v2_objective_migration()
 	test_user_settings_round_trip()
 	test_light_and_noise_rules()
+	test_truth_unlock()
+	test_basement_objective()
 	test_manifest_assets_exist()
 	print("Results: %d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)
@@ -65,6 +67,7 @@ func test_save_round_trip() -> void:
 	var state: Node = _state_script.new()
 	state.set_flag("power_on")
 	state.set_flag("ward_chart_read")
+	state.set_flag("tape_second_heard")
 	state.add_item("lift_key")
 	state.set_objective("Проверить палатку")
 	state.set_checkpoint(Vector2(123, 456))
@@ -77,6 +80,7 @@ func test_save_round_trip() -> void:
 	assert_true(loaded.load_game(path), "save_loaded")
 	assert_true(loaded.has_flag("power_on"), "save_flag_round_trip")
 	assert_true(loaded.has_flag("ward_chart_read"), "save_second_flag")
+	assert_true(loaded.has_flag("tape_second_heard"), "save_basement_flag")
 	assert_true(loaded.has_item("lift_key"), "save_item_round_trip")
 	assert_eq(loaded.objective, "Проверить палатку", "save_objective_round_trip")
 	assert_eq(loaded.checkpoint, Vector2(123, 456), "save_checkpoint_round_trip")
@@ -177,6 +181,39 @@ func test_light_and_noise_rules() -> void:
 		"sight_light")
 	assert_true(is_equal_approx(float(enemy_script.call("sight_range_for", false)), 80.0),
 		"sight_dark")
+
+
+func test_truth_unlock() -> void:
+	var state: Node = _state_script.new()
+	var notes := [
+		"archive_note_1", "archive_note_2", "archive_note_3",
+		"basement_note", "boiler_note",
+	]
+	assert_true(not state.is_truth_unlocked(), "truth_empty")
+	for flag: String in notes:
+		state.set_flag(flag)
+	assert_true(not state.is_truth_unlocked(), "truth_without_tapes")
+	state.set_flag("tape_heard")
+	assert_true(not state.is_truth_unlocked(), "truth_one_tape")
+	state.set_flag("tape_second_heard")
+	assert_true(state.is_truth_unlocked(), "truth_complete")
+	state.set_flag("archive_note_2", false)
+	assert_true(not state.is_truth_unlocked(), "truth_needs_every_note")
+	state.free()
+
+
+func test_basement_objective() -> void:
+	var state: Node = _state_script.new()
+	state.set_flag("power_on")
+	state.set_flag("key_taken")
+	state.set_flag("ward_chart_read")
+	assert_eq(state.resolve_objective(),
+		"Спуститься в подвал по лестнице в холле.", "objective_basement_hint")
+	state.set_flag("basement_visited")
+	assert_eq(state.resolve_objective(),
+		"Обыскать архив и котельную: пять записок и вторая кассета.",
+		"objective_basement_search")
+	state.free()
 
 
 func test_manifest_assets_exist() -> void:

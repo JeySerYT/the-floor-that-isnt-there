@@ -10,7 +10,7 @@ const WALK_NOISE := 170.0
 const SNEAK_NOISE := 60.0
 const INTERACTION_NOISE := 240.0
 const INTERACTION_RANGE := 50.0
-const MAP_BOUNDS := Rect2(32, 32, 1472, 896)
+const MAP_BOUNDS := Rect2(32, 32, 1472, 1216)
 
 const SHEET := preload("res://assets/textures/characters/player_sheet.png")
 const FRAME_W := 20
@@ -41,7 +41,7 @@ func _ready() -> void:
 	camera.limit_left = 0
 	camera.limit_top = 0
 	camera.limit_right = 1536
-	camera.limit_bottom = 960
+	camera.limit_bottom = 1280
 	camera.position_smoothing_enabled = true
 	camera.position_smoothing_speed = 6.0
 	camera.reset_smoothing()
@@ -142,6 +142,15 @@ func respawn_at(pos: Vector2) -> void:
 	camera.reset_smoothing()
 	_play_animation(false)
 	AudioManager.play_sfx("heartbeat", -8.0)
+
+
+func teleport_to(pos: Vector2) -> void:
+	if hiding:
+		exit_cover()
+	global_position = pos
+	velocity = Vector2.ZERO
+	camera.reset_smoothing()
+	_play_animation(false)
 
 
 func _row_for(direction: Vector2) -> int:

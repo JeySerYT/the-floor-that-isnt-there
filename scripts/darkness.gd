@@ -5,7 +5,7 @@ extends Node2D
 ## вокруг игрока. Живёт в мировых координатах, поэтому радиус
 ## обзора масштабируется вместе с камерой.
 
-const MAP_SIZE := Vector2(1536, 960)
+const MAP_SIZE := Vector2(1536, 1280)
 const VISUAL_RADIUS := 150.0
 const FADE_SPEED := 3.2
 
