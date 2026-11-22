@@ -24,7 +24,7 @@ jobs:
       - name: Build release notes
         run: |
           version="${TAG#v}"
-          python3 scripts/release_notes.py "$version" > release-notes.md
+          python3 tools/release_notes.py "$version" > release-notes.md
           printf '\nПолный список изменений — в [CHANGELOG](https://github.com/%s/blob/master/CHANGELOG.md).\n' \
             "$GITHUB_REPOSITORY" >> release-notes.md
 

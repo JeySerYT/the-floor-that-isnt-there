@@ -139,7 +139,7 @@ tests/run_all.sh
 файлов из манифеста.
 
 Релиз публикуется автоматически по тегу: workflow `Release` берёт заметки
-из `CHANGELOG.md` через `scripts/release_notes.py` и создаёт релиз на GitHub.
+из `CHANGELOG.md` через `tools/release_notes.py` и создаёт релиз на GitHub.
 Тег с дефисом (`vX.Y.Z-alpha.1`) помечается как prerelease.
 
 ```bash
@@ -176,10 +176,9 @@ scenes/               main, world, player
 scripts/              main, world, player, enemy, interaction, darkness
 scripts/autoload/     GameState, AudioManager, UserSettings
 scripts/ui/           GameUI
-scripts/release_notes.py  заметки релиза из CHANGELOG
 tests/                headless-тесты
 tests/scenarios/      сценарные регрессии
-tools/                генераторы текстур, звука и превью
+tools/                генераторы текстур, звука, превью и заметок релиза
 ```
 
 ## Участие
