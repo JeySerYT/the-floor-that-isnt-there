@@ -69,8 +69,8 @@ v1 и v2.
 ## Экспорт
 
 Godot не включает нересурсные файлы в сборку. Перед первым экспортом
-добавьте `data/*.json` в **Filters to export non-resource files**.
-Иконка лежит в `assets/branding/icon.svg` и подключена через
+добавьте `data/*.json` и `VERSION` в **Filters to export non-resource
+files**. Иконка лежит в `assets/branding/icon.svg` и подключена через
 `application/config/icon`.
 
 ## Проверка
