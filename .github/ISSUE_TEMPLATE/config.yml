@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Приватный отчёт об уязвимости
+    url: https://github.com/JeySerYT/the-floor-that-isnt-there/security/advisories/new
+    about: Не создавайте публичный Issue для проблем безопасности
+  - name: Релизы
+    url: https://github.com/JeySerYT/the-floor-that-isnt-there/releases
+    about: Скачать последнюю версию и прочитать изменения

@@ -1,3 +1,5 @@
+<img src="assets/logo.svg" width="88" height="88" alt="Логотип «Этаж, которого нет»">
+
 # Этаж, которого нет
 
 [![Tests](https://github.com/JeySerYT/the-floor-that-isnt-there/actions/workflows/tests.yml/badge.svg)](https://github.com/JeySerYT/the-floor-that-isnt-there/actions/workflows/tests.yml)
@@ -23,6 +25,7 @@
 - [Конфигурация](#конфигурация)
 - [Разработка](#разработка)
 - [Структура](#структура)
+- [Участие](#участие)
 - [Лицензия](#лицензия)
 
 ## Установка
@@ -178,6 +181,12 @@ tests/                headless-тесты
 tests/scenarios/      сценарные регрессии
 tools/                генераторы текстур, звука и превью
 ```
+
+## Участие
+
+Правила сборки и PR — в [CONTRIBUTING.md](CONTRIBUTING.md). Об уязвимостях
+сообщайте приватно по [SECURITY.md](SECURITY.md); правила общения —
+в [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## Лицензия
 
