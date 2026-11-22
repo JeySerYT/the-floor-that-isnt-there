@@ -1,0 +1,959 @@
+{
+  "version": 1,
+  "batches": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "assets": [
+    {
+      "id": "prop_reception_desk",
+      "file": "assets/textures/furniture/prop_reception_desk.png",
+      "size": [
+        96,
+        48
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Стойка приёмного покоя с журналом и монитором"
+    },
+    {
+      "id": "prop_filing_cabinet",
+      "file": "assets/textures/furniture/prop_filing_cabinet.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Картотека на три ящика"
+    },
+    {
+      "id": "prop_waiting_bench",
+      "file": "assets/textures/furniture/prop_waiting_bench.png",
+      "size": [
+        64,
+        24
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Деревянная скамья ожидания"
+    },
+    {
+      "id": "prop_chair",
+      "file": "assets/textures/furniture/prop_chair.png",
+      "size": [
+        20,
+        24
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Стул с металлическими ножками"
+    },
+    {
+      "id": "prop_hospital_bed",
+      "file": "assets/textures/furniture/prop_hospital_bed.png",
+      "size": [
+        96,
+        48
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Койка с подушкой, одеялом и поручнями"
+    },
+    {
+      "id": "prop_metal_cabinet",
+      "file": "assets/textures/furniture/prop_metal_cabinet.png",
+      "size": [
+        32,
+        40
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Медицинский шкаф с двумя дверцами"
+    },
+    {
+      "id": "prop_morgue_table",
+      "file": "assets/textures/furniture/prop_morgue_table.png",
+      "size": [
+        96,
+        32
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Стол морга с желобами и сливом"
+    },
+    {
+      "id": "prop_body_bag",
+      "file": "assets/textures/furniture/prop_body_bag.png",
+      "size": [
+        64,
+        24
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Мешок для тела с молнией и биркой"
+    },
+    {
+      "id": "prop_sink",
+      "file": "assets/textures/furniture/prop_sink.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "furniture",
+      "tileable": false,
+      "batch": 2,
+      "description": "Раковина с краном и ржавчиной"
+    },
+    {
+      "id": "prop_fusebox",
+      "file": "assets/textures/devices/prop_fusebox.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "devices",
+      "tileable": false,
+      "batch": 2,
+      "description": "Электрощит с предохранителями и предупреждением"
+    },
+    {
+      "id": "prop_generator",
+      "file": "assets/textures/devices/prop_generator.png",
+      "size": [
+        32,
+        40
+      ],
+      "category": "devices",
+      "tileable": false,
+      "batch": 2,
+      "description": "Генератор с патрубком и щитком"
+    },
+    {
+      "id": "prop_iv_stand",
+      "file": "assets/textures/devices/prop_iv_stand.png",
+      "size": [
+        16,
+        44
+      ],
+      "category": "devices",
+      "tileable": false,
+      "batch": 2,
+      "description": "Штатив капельницы с пакетом"
+    },
+    {
+      "id": "prop_wheelchair",
+      "file": "assets/textures/devices/prop_wheelchair.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "devices",
+      "tileable": false,
+      "batch": 2,
+      "description": "Кресло-каталка, вид сверху"
+    },
+    {
+      "id": "prop_elevator_panel",
+      "file": "assets/textures/devices/prop_elevator_panel.png",
+      "size": [
+        16,
+        24
+      ],
+      "category": "devices",
+      "tileable": false,
+      "batch": 2,
+      "description": "Панель вызова лифта с кнопками"
+    },
+    {
+      "id": "prop_boarded_door",
+      "file": "assets/textures/barriers/prop_boarded_door.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "barriers",
+      "tileable": false,
+      "batch": 2,
+      "description": "Забитая дверь с предупреждением"
+    },
+    {
+      "id": "prop_observation_window",
+      "file": "assets/textures/barriers/prop_observation_window.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "barriers",
+      "tileable": false,
+      "batch": 2,
+      "description": "Смотровое стекло с сеткой и трещиной"
+    },
+    {
+      "id": "item_cassette",
+      "file": "assets/textures/items/item_cassette.png",
+      "size": [
+        16,
+        16
+      ],
+      "category": "items",
+      "tileable": false,
+      "batch": 2,
+      "description": "Аудиокассета с записью"
+    },
+    {
+      "id": "item_key",
+      "file": "assets/textures/items/item_key.png",
+      "size": [
+        16,
+        16
+      ],
+      "category": "items",
+      "tileable": false,
+      "batch": 2,
+      "description": "Служебный ключ"
+    },
+    {
+      "id": "item_fuse",
+      "file": "assets/textures/items/item_fuse.png",
+      "size": [
+        16,
+        16
+      ],
+      "category": "items",
+      "tileable": false,
+      "batch": 2,
+      "description": "Керамический предохранитель"
+    },
+    {
+      "id": "item_note",
+      "file": "assets/textures/items/item_note.png",
+      "size": [
+        16,
+        16
+      ],
+      "category": "items",
+      "tileable": false,
+      "batch": 2,
+      "description": "Записка с красным штампом"
+    },
+    {
+      "id": "floor_corridor_a",
+      "file": "assets/textures/floors/floor_corridor_a.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": true,
+      "batch": 1,
+      "description": "Коридор: целый кафель"
+    },
+    {
+      "id": "floor_corridor_b",
+      "file": "assets/textures/floors/floor_corridor_b.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": true,
+      "batch": 1,
+      "description": "Коридор: затёртый кафель"
+    },
+    {
+      "id": "floor_corridor_c",
+      "file": "assets/textures/floors/floor_corridor_c.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": true,
+      "batch": 1,
+      "description": "Коридор: скол и ржавчина"
+    },
+    {
+      "id": "floor_corridor_stain",
+      "file": "assets/textures/floors/floor_corridor_stain.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Коридор: сырое пятно"
+    },
+    {
+      "id": "floor_corridor_wet",
+      "file": "assets/textures/floors/floor_corridor_wet.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Коридор: лужа"
+    },
+    {
+      "id": "floor_ward",
+      "file": "assets/textures/floors/floor_ward.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": true,
+      "batch": 1,
+      "description": "Палата: светлый кафель"
+    },
+    {
+      "id": "floor_morgue",
+      "file": "assets/textures/floors/floor_morgue.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": true,
+      "batch": 1,
+      "description": "Морг: бетон"
+    },
+    {
+      "id": "floor_lobby",
+      "file": "assets/textures/floors/floor_lobby.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": true,
+      "batch": 1,
+      "description": "Холл: шахматная плитка"
+    },
+    {
+      "id": "floor_blood",
+      "file": "assets/textures/floors/floor_blood.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Коридор: кровь"
+    },
+    {
+      "id": "floor_grate",
+      "file": "assets/textures/floors/floor_grate.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "floors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Морг: решётка слива"
+    },
+    {
+      "id": "wall_cap",
+      "file": "assets/textures/walls/wall_cap.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "walls",
+      "tileable": true,
+      "batch": 1,
+      "description": "Торец стены: бетон"
+    },
+    {
+      "id": "wall_face_a",
+      "file": "assets/textures/walls/wall_face_a.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "walls",
+      "tileable": true,
+      "batch": 1,
+      "description": "Стена: облупившаяся краска"
+    },
+    {
+      "id": "wall_face_b",
+      "file": "assets/textures/walls/wall_face_b.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "walls",
+      "tileable": true,
+      "batch": 1,
+      "description": "Стена: сырость и плесень"
+    },
+    {
+      "id": "wall_face_c",
+      "file": "assets/textures/walls/wall_face_c.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "walls",
+      "tileable": true,
+      "batch": 1,
+      "description": "Стена: трещины и кирпич"
+    },
+    {
+      "id": "wall_tile",
+      "file": "assets/textures/walls/wall_tile.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "walls",
+      "tileable": true,
+      "batch": 1,
+      "description": "Стена: кафельный низ"
+    },
+    {
+      "id": "wall_pipe",
+      "file": "assets/textures/walls/wall_pipe.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "walls",
+      "tileable": true,
+      "batch": 1,
+      "description": "Стена: трубы"
+    },
+    {
+      "id": "door_ward",
+      "file": "assets/textures/doors/door_ward.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Дверь палаты: стекло и ручка"
+    },
+    {
+      "id": "door_morgue",
+      "file": "assets/textures/doors/door_morgue.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Дверь морга: сталь и заклёпки"
+    },
+    {
+      "id": "door_double",
+      "file": "assets/textures/doors/door_double.png",
+      "size": [
+        64,
+        32
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Двустворчатая дверь с толкателями"
+    },
+    {
+      "id": "door_elevator",
+      "file": "assets/textures/doors/door_elevator.png",
+      "size": [
+        100,
+        140
+      ],
+      "category": "doors",
+      "tileable": false,
+      "batch": 1,
+      "description": "Служебный лифт: створки"
+    },
+    {
+      "id": "decal_blood_pool",
+      "file": "assets/textures/decals/decal_blood_pool.png",
+      "size": [
+        64,
+        64
+      ],
+      "category": "decals",
+      "tileable": false,
+      "batch": 1,
+      "description": "Лужа крови"
+    },
+    {
+      "id": "decal_blood_smear",
+      "file": "assets/textures/decals/decal_blood_smear.png",
+      "size": [
+        64,
+        48
+      ],
+      "category": "decals",
+      "tileable": false,
+      "batch": 1,
+      "description": "Кровавый след волочения"
+    },
+    {
+      "id": "decal_stain",
+      "file": "assets/textures/decals/decal_stain.png",
+      "size": [
+        48,
+        48
+      ],
+      "category": "decals",
+      "tileable": false,
+      "batch": 1,
+      "description": "Водяное пятно"
+    },
+    {
+      "id": "decal_crack",
+      "file": "assets/textures/decals/decal_crack.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "decals",
+      "tileable": false,
+      "batch": 1,
+      "description": "Трещина"
+    },
+    {
+      "id": "decal_brick_patch",
+      "file": "assets/textures/decals/decal_brick_patch.png",
+      "size": [
+        48,
+        32
+      ],
+      "category": "decals",
+      "tileable": false,
+      "batch": 1,
+      "description": "Обрушенная штукатурка: кирпич"
+    },
+    {
+      "id": "decal_mold",
+      "file": "assets/textures/decals/decal_mold.png",
+      "size": [
+        32,
+        32
+      ],
+      "category": "decals",
+      "tileable": false,
+      "batch": 1,
+      "description": "Плесень"
+    },
+    {
+      "id": "decal_wall_crack",
+      "file": "assets/textures/decals/decal_wall_crack.png",
+      "size": [
+        32,
+        48
+      ],
+      "category": "decals",
+      "tileable": false,
+      "batch": 1,
+      "description": "Длинная трещина стены"
+    },
+    {
+      "id": "player_sheet",
+      "file": "assets/textures/characters/player_sheet.png",
+      "size": [
+        100,
+        128
+      ],
+      "category": "characters",
+      "tileable": false,
+      "batch": 3,
+      "description": "Марк: 4 направления, стойка и 4 кадра ходьбы",
+      "frames": {
+        "frame_size": [
+          20,
+          32
+        ],
+        "columns": 5,
+        "rows": 4,
+        "row_order": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "column_order": [
+          "idle",
+          "walk_1",
+          "walk_2",
+          "walk_3",
+          "walk_4"
+        ],
+        "animations": {
+          "idle": {
+            "frames": [
+              0
+            ],
+            "fps": 1.0
+          },
+          "walk": {
+            "frames": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "fps": 8.0
+          }
+        }
+      }
+    },
+    {
+      "id": "nurse_sheet",
+      "file": "assets/textures/characters/nurse_sheet.png",
+      "size": [
+        120,
+        152
+      ],
+      "category": "characters",
+      "tileable": false,
+      "batch": 3,
+      "description": "Медсестра: 4 направления, стойка и 4 кадра ходьбы",
+      "frames": {
+        "frame_size": [
+          24,
+          38
+        ],
+        "columns": 5,
+        "rows": 4,
+        "row_order": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "column_order": [
+          "idle",
+          "walk_1",
+          "walk_2",
+          "walk_3",
+          "walk_4"
+        ],
+        "animations": {
+          "idle": {
+            "frames": [
+              0
+            ],
+            "fps": 1.0
+          },
+          "walk": {
+            "frames": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "fps": 8.0
+          }
+        }
+      }
+    },
+    {
+      "id": "nurse_chase_sheet",
+      "file": "assets/textures/characters/nurse_chase_sheet.png",
+      "size": [
+        120,
+        152
+      ],
+      "category": "characters",
+      "tileable": false,
+      "batch": 3,
+      "description": "Медсестра в погоне: красные глаза, кровь на руках",
+      "frames": {
+        "frame_size": [
+          24,
+          38
+        ],
+        "columns": 5,
+        "rows": 4,
+        "row_order": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "column_order": [
+          "idle",
+          "walk_1",
+          "walk_2",
+          "walk_3",
+          "walk_4"
+        ],
+        "animations": {
+          "idle": {
+            "frames": [
+              0
+            ],
+            "fps": 1.0
+          },
+          "walk": {
+            "frames": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "fps": 8.0
+          }
+        }
+      }
+    },
+    {
+      "id": "ui_panel",
+      "file": "assets/textures/ui/ui_panel.png",
+      "size": [
+        64,
+        64
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Панель HUD: тёмный пластик, латунная линия, уголки и заклёпки",
+      "nine_patch": {
+        "left": 12,
+        "right": 12,
+        "top": 12,
+        "bottom": 12
+      }
+    },
+    {
+      "id": "ui_panel_alert",
+      "file": "assets/textures/ui/ui_panel_alert.png",
+      "size": [
+        64,
+        64
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Панель тревоги: ржаво-красная рамка для выбора и финалов",
+      "nine_patch": {
+        "left": 12,
+        "right": 12,
+        "top": 12,
+        "bottom": 12
+      }
+    },
+    {
+      "id": "ui_panel_paper",
+      "file": "assets/textures/ui/ui_panel_paper.png",
+      "size": [
+        64,
+        64
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Бумажная панель для записок: сгиб, потёртый край, пятно",
+      "nine_patch": {
+        "left": 12,
+        "right": 12,
+        "top": 12,
+        "bottom": 12
+      }
+    },
+    {
+      "id": "ui_button",
+      "file": "assets/textures/ui/ui_button.png",
+      "size": [
+        64,
+        28
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Кнопка меню, обычное состояние",
+      "nine_patch": {
+        "left": 10,
+        "right": 10,
+        "top": 8,
+        "bottom": 8
+      }
+    },
+    {
+      "id": "ui_button_hover",
+      "file": "assets/textures/ui/ui_button_hover.png",
+      "size": [
+        64,
+        28
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Кнопка меню, наведение: янтарная рамка",
+      "nine_patch": {
+        "left": 10,
+        "right": 10,
+        "top": 8,
+        "bottom": 8
+      }
+    },
+    {
+      "id": "ui_button_pressed",
+      "file": "assets/textures/ui/ui_button_pressed.png",
+      "size": [
+        64,
+        28
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Кнопка меню, нажатие: утопленная рамка",
+      "nine_patch": {
+        "left": 10,
+        "right": 10,
+        "top": 8,
+        "bottom": 8
+      }
+    },
+    {
+      "id": "ui_slot",
+      "file": "assets/textures/ui/ui_slot.png",
+      "size": [
+        40,
+        40
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Слот инвентаря 40x40: тёмное поле с прицелом",
+      "nine_patch": {
+        "left": 8,
+        "right": 8,
+        "top": 8,
+        "bottom": 8
+      }
+    },
+    {
+      "id": "ui_divider",
+      "file": "assets/textures/ui/ui_divider.png",
+      "size": [
+        32,
+        8
+      ],
+      "category": "ui",
+      "tileable": true,
+      "batch": 4,
+      "description": "Разделитель: тонкая латунная линия с засечками"
+    },
+    {
+      "id": "icon_cassette",
+      "file": "assets/textures/ui/icon_cassette.png",
+      "size": [
+        24,
+        24
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Иконка инвентаря: кассета"
+    },
+    {
+      "id": "icon_key",
+      "file": "assets/textures/ui/icon_key.png",
+      "size": [
+        24,
+        24
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Иконка инвентаря: служебный ключ"
+    },
+    {
+      "id": "icon_fuse",
+      "file": "assets/textures/ui/icon_fuse.png",
+      "size": [
+        24,
+        24
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Иконка инвентаря: предохранитель"
+    },
+    {
+      "id": "icon_note",
+      "file": "assets/textures/ui/icon_note.png",
+      "size": [
+        24,
+        24
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Иконка инвентаря: записка"
+    },
+    {
+      "id": "ui_note_sheet",
+      "file": "assets/textures/ui/ui_note_sheet.png",
+      "size": [
+        520,
+        260
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Лист записки 520x260: сгибы, пятна, кофейный круг, штамп"
+    },
+    {
+      "id": "ui_vignette",
+      "file": "assets/textures/ui/ui_vignette.png",
+      "size": [
+        640,
+        360
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Виньетка 640x360: затемнение по краям и сканлайны"
+    },
+    {
+      "id": "ui_logo",
+      "file": "assets/textures/ui/ui_logo.png",
+      "size": [
+        217,
+        64
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Логотип «ЭТАЖ, КОТОРОГО НЕТ»: пиксельный шрифт 5x7, шкала 3x"
+    },
+    {
+      "id": "ui_title_bg",
+      "file": "assets/textures/ui/ui_title_bg.png",
+      "size": [
+        640,
+        360
+      ],
+      "category": "ui",
+      "tileable": false,
+      "batch": 4,
+      "description": "Титульный фон: коридор с дверью, лампой и фигурой в глубине"
+    }
+  ]
+}
