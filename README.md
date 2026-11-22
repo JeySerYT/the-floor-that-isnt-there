@@ -1,8 +1,9 @@
 # Этаж, которого нет
 
+![Release](https://img.shields.io/github/v/release/JeySerYT/etazh-kotorogo-net?include_prereleases&label=release&color=7a1f1f)
+![License](https://img.shields.io/github/license/JeySerYT/etazh-kotorogo-net?color=7a1f1f)
 ![Godot](https://img.shields.io/badge/Godot-4.7-478cbf)
 ![Platform](https://img.shields.io/badge/platform-Linux-333333)
-![Age](https://img.shields.io/badge/18%2B-хоррор-7a1f1f)
 
 Короткий сюжетный 2D-хоррор с видом сверху: Марк ищет Леру в больнице
 «Белый шум» и попадает на этаж, которого нет в плане здания. Пиксельная
@@ -31,6 +32,8 @@
 Самый короткий путь, если Godot уже в `PATH`:
 
 ```bash
+git clone https://github.com/JeySerYT/etazh-kotorogo-net.git
+cd etazh-kotorogo-net
 godot --path .
 ```
 
@@ -163,4 +166,4 @@ tools/                генераторы текстур, звука и пре�
 
 ## Лицензия
 
-Не определена: проект приватный, локальный, без remote и без файла `LICENSE`.
+[MIT](LICENSE), © 2026 JeySerYT.

@@ -154,14 +154,11 @@
 
 ## Сравнения версий
 
-Репозиторий локальный, remote не настроен, поэтому веб-ссылок на сравнения
-нет. История доступна по тегам:
-
-```bash
-git diff v0.4.0-alpha.1...v0.5.0-alpha.1
-git diff v0.3.2-alpha.1...v0.4.0-alpha.1
-git diff v0.3.1-alpha.1...v0.3.2-alpha.1
-git diff v0.3.0-alpha.1...v0.3.1-alpha.1
-git diff v0.2.0-alpha.1...v0.3.0-alpha.1
-git diff v0.1.0-alpha.1...v0.2.0-alpha.1
-```
+[Unreleased]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.5.0-alpha.1...HEAD
+[0.5.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.4.0-alpha.1...v0.5.0-alpha.1
+[0.4.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.3.2-alpha.1...v0.4.0-alpha.1
+[0.3.2-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.3.1-alpha.1...v0.3.2-alpha.1
+[0.3.1-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.3.0-alpha.1...v0.3.1-alpha.1
+[0.3.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/compare/v0.2.0-alpha.1...v0.3.0-alpha.1
+[0.2.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/commits/v0.2.0-alpha.1
+[0.1.0-alpha.1]: https://github.com/JeySerYT/etazh-kotorogo-net/releases
