@@ -1,5 +1,6 @@
 # Этаж, которого нет
 
+[![Tests](https://github.com/JeySerYT/etazh-kotorogo-net/actions/workflows/tests.yml/badge.svg)](https://github.com/JeySerYT/etazh-kotorogo-net/actions/workflows/tests.yml)
 ![Release](https://img.shields.io/github/v/release/JeySerYT/etazh-kotorogo-net?include_prereleases&label=release&color=7a1f1f)
 ![License](https://img.shields.io/github/license/JeySerYT/etazh-kotorogo-net?color=7a1f1f)
 ![Godot](https://img.shields.io/badge/Godot-4.7-478cbf)
