@@ -3,9 +3,9 @@ extends Node
 signal state_changed
 
 const SAVE_PATH := "user://savegame.json"
-const SAVE_VERSION := 2
+const SAVE_VERSION := 3
 const WORLD_SCALE := 2
-const START_OBJECTIVE := "Найти Леру. Осмотреть регистратуру."
+const START_OBJECTIVE := "Подойти к стойке регистратуры и открыть журнал приёма."
 const START_CHECKPOINT := Vector2(160.0, 840.0)
 
 var flags: Dictionary = {}
@@ -66,6 +66,20 @@ func set_objective(text: String) -> void:
 	state_changed.emit()
 
 
+func resolve_objective() -> String:
+	if has_flag("power_on"):
+		if has_flag("key_taken"):
+			if has_flag("ward_chart_read"):
+				return "Вернуться к смотровому стеклу в палате 13 или вызвать лифт."
+			return "Прочитать карту наблюдения в палате 13."
+		return "Найти служебный ключ в морге."
+	if has_flag("fuse_taken"):
+		return "Вставить предохранитель в электрощит в щитовой."
+	if has_flag("reception_note_read"):
+		return "Взять предохранитель из картотеки в приёмном покое."
+	return START_OBJECTIVE
+
+
 func set_checkpoint(pos: Vector2) -> void:
 	checkpoint = pos
 
@@ -121,9 +135,12 @@ func load_game(path: String = SAVE_PATH) -> bool:
 	checkpoint = START_CHECKPOINT
 	if loaded_checkpoint is Array and loaded_checkpoint.size() >= 2:
 		checkpoint = Vector2(float(loaded_checkpoint[0]), float(loaded_checkpoint[1]))
-		if save_version < SAVE_VERSION:
+		if save_version < 2:
 			# Saves from the 320x180 build stored half-size world coordinates.
 			checkpoint *= WORLD_SCALE
+	if save_version < 3:
+		# Old saves keep a vague objective text; rebuild it from the flags.
+		objective = resolve_objective()
 	play_time = float(data.get("play_time", 0.0))
 	ending = str(data.get("ending", ""))
 	state_changed.emit()

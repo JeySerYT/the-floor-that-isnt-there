@@ -52,6 +52,14 @@ var _ending_title: Label
 var _ending_body: RichTextLabel
 var _caught_flash: ColorRect
 var _toast_tween: Tween
+var _objective_panel: PanelContainer
+var _inventory_panel: PanelContainer
+var _settings: Control
+var _settings_return := "menu"
+var _fullscreen_button: Button
+var _volume_slider: HSlider
+var _volume_value: Label
+var _player: Node2D
 
 
 func _ready() -> void:
@@ -64,8 +72,68 @@ func _ready() -> void:
 	_build_note_panel()
 	_build_choice_panel()
 	_build_pause_panel()
+	_build_settings_panel()
 	_build_ending_panel()
+	UserSettings.changed.connect(_refresh_settings)
 	show_menu(GameState.has_save())
+
+
+func _process(delta: float) -> void:
+	if _game == null or not _game.visible or not is_instance_valid(_player):
+		return
+	var screen_pos: Vector2 = get_viewport().get_canvas_transform() * _player.global_position
+	var body := Rect2(screen_pos - Vector2(7, 22), Vector2(14, 28))
+	_fade_panel(_objective_panel, body.intersects(_objective_panel.get_global_rect()), delta)
+	_fade_panel(_inventory_panel, body.intersects(_inventory_panel.get_global_rect()), delta)
+	if _prompt_panel.visible:
+		_fade_panel(_prompt_panel, body.intersects(_prompt_panel.get_global_rect()), delta)
+
+
+func _fade_panel(panel: Control, blocked: bool, delta: float) -> void:
+	var target := 0.16 if blocked else 1.0
+	panel.modulate.a = lerpf(panel.modulate.a, target, minf(1.0, delta * 9.0))
+
+
+func set_player(player: Node2D) -> void:
+	_player = player
+
+
+func open_settings(from: String) -> void:
+	_settings_return = from
+	_refresh_settings()
+	_settings.visible = true
+	var back := _settings.find_child("Back", true, false) as Button
+	if back != null:
+		back.grab_focus()
+
+
+func close_settings() -> void:
+	_settings.visible = false
+	if _settings_return == "pause":
+		var pause_settings := _pause.find_child("Settings", true, false) as Button
+		if pause_settings != null:
+			pause_settings.grab_focus()
+
+
+func is_settings_open() -> bool:
+	return _settings != null and _settings.visible
+
+
+func _refresh_settings() -> void:
+	if _fullscreen_button == null:
+		return
+	_fullscreen_button.text = "Полный экран: %s" % ("вкл" if UserSettings.fullscreen else "выкл")
+	var percent := roundi(UserSettings.master_volume * 100.0)
+	_volume_slider.set_value_no_signal(float(percent))
+	_volume_value.text = "%d%%" % percent
+
+
+func _on_fullscreen_pressed() -> void:
+	UserSettings.set_fullscreen(not UserSettings.fullscreen)
+
+
+func _on_volume_changed(value: float) -> void:
+	UserSettings.set_master_volume(value / 100.0)
 
 
 func show_menu(has_save: bool) -> void:
@@ -74,6 +142,7 @@ func show_menu(has_save: bool) -> void:
 	_note.visible = false
 	_choice.visible = false
 	_pause.visible = false
+	_settings.visible = false
 	_ending.visible = false
 	_continue_button.disabled = not has_save
 	_new_button.grab_focus()
@@ -85,6 +154,7 @@ func show_game() -> void:
 	_note.visible = false
 	_choice.visible = false
 	_pause.visible = false
+	_settings.visible = false
 	_ending.visible = false
 	_update_hud()
 
@@ -169,6 +239,7 @@ func show_ending(title: String, body: String) -> void:
 	_note.visible = false
 	_choice.visible = false
 	_pause.visible = false
+	_settings.visible = false
 	_ending_title.text = title
 	_ending_body.text = body
 	_ending.visible = true
@@ -213,6 +284,7 @@ func _build_game_hud() -> void:
 	objective_panel.size = Vector2(392, 78)
 	objective_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_game.add_child(objective_panel)
+	_objective_panel = objective_panel
 	var objective_box := VBoxContainer.new()
 	objective_box.add_theme_constant_override("separation", 2)
 	objective_panel.add_child(objective_box)
@@ -234,6 +306,7 @@ func _build_game_hud() -> void:
 	inventory_panel.offset_bottom = -16
 	inventory_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_game.add_child(inventory_panel)
+	_inventory_panel = inventory_panel
 	var inventory_box := VBoxContainer.new()
 	inventory_box.add_theme_constant_override("separation", 3)
 	inventory_panel.add_child(inventory_box)
@@ -382,6 +455,10 @@ func _build_menu() -> void:
 	_new_button.pressed.connect(func() -> void: new_game_requested.emit())
 	button_box.add_child(_new_button)
 
+	var settings_button := _make_button("Настройки", 220)
+	settings_button.pressed.connect(func() -> void: open_settings("menu"))
+	button_box.add_child(settings_button)
+
 	var quit_button := _make_button("Выход", 220)
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	button_box.add_child(quit_button)
@@ -486,6 +563,11 @@ func _build_pause_panel() -> void:
 	resume.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	resume.pressed.connect(func() -> void: resume_requested.emit())
 	box.add_child(resume)
+	var settings := _make_button("Настройки", 260)
+	settings.name = "Settings"
+	settings.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	settings.pressed.connect(func() -> void: open_settings("pause"))
+	box.add_child(settings)
 	var save := _make_button("Сохранить и выйти в меню", 260)
 	save.name = "Menu"
 	save.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -499,6 +581,57 @@ func _build_pause_panel() -> void:
 	var hint := _label("Прогресс сохраняется автоматически", 12, Color(0.4, 0.41, 0.42))
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(hint)
+
+
+func _build_settings_panel() -> void:
+	_settings = _make_overlay("Settings")
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_settings.add_child(center)
+	var panel := _make_panel("panel")
+	panel.custom_minimum_size = Vector2(420, 0)
+	center.add_child(panel)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 10)
+	panel.add_child(box)
+
+	var title := _label("НАСТРОЙКИ", 26, Color(0.68, 0.66, 0.61))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(title)
+
+	_fullscreen_button = _make_button("Полный экран: выкл", 300)
+	_fullscreen_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_fullscreen_button.pressed.connect(_on_fullscreen_pressed)
+	box.add_child(_fullscreen_button)
+
+	var volume_caption := _label("ГРОМКОСТЬ", 12, Color(0.62, 0.64, 0.58))
+	volume_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(volume_caption)
+
+	_volume_slider = HSlider.new()
+	_volume_slider.min_value = 0.0
+	_volume_slider.max_value = 100.0
+	_volume_slider.step = 1.0
+	_volume_slider.custom_minimum_size = Vector2(300, 20)
+	_volume_slider.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_volume_slider.value_changed.connect(_on_volume_changed)
+	_style_slider(_volume_slider)
+	box.add_child(_volume_slider)
+
+	_volume_value = _label("80%", 12, Color(0.75, 0.73, 0.66))
+	_volume_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(_volume_value)
+
+	var back := _make_button("Назад  [Esc]", 200)
+	back.name = "Back"
+	back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	back.pressed.connect(close_settings)
+	box.add_child(back)
+
+	var hint := _label("Настройки сохраняются автоматически", 11, Color(0.4, 0.41, 0.42))
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(hint)
+	_refresh_settings()
 
 
 func _build_ending_panel() -> void:
@@ -630,6 +763,45 @@ func _make_button(text: String, min_width: float = 168.0) -> Button:
 	button.add_theme_color_override("font_pressed_color", Color(1.0, 0.95, 0.8))
 	button.add_theme_color_override("font_disabled_color", Color(0.32, 0.32, 0.31))
 	return button
+
+
+func _style_slider(slider: HSlider) -> void:
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(0.07, 0.08, 0.085)
+	track.border_color = Color(0.26, 0.28, 0.27)
+	track.set_border_width_all(2)
+	track.content_margin_top = 4
+	track.content_margin_bottom = 4
+	slider.add_theme_stylebox_override("slider", track)
+
+	var filled := StyleBoxFlat.new()
+	filled.bg_color = Color(0.42, 0.14, 0.14)
+	filled.border_color = Color(0.58, 0.22, 0.2)
+	filled.set_border_width_all(2)
+	filled.content_margin_top = 4
+	filled.content_margin_bottom = 4
+	slider.add_theme_stylebox_override("grabber_area", filled)
+	slider.add_theme_stylebox_override("grabber_area_highlight", filled)
+
+	var grabber := _make_grabber_texture()
+	slider.add_theme_icon_override("grabber", grabber)
+	slider.add_theme_icon_override("grabber_highlight", grabber)
+	slider.add_theme_icon_override("grabber_disabled", grabber)
+
+
+func _make_grabber_texture() -> ImageTexture:
+	var image := Image.create(10, 16, false, Image.FORMAT_RGBA8)
+	image.fill(Color(0, 0, 0, 0))
+	for y in range(1, 15):
+		for x in range(1, 9):
+			image.set_pixel(x, y, Color(0.13, 0.14, 0.145))
+	for y in range(2, 14):
+		for x in range(2, 8):
+			image.set_pixel(x, y, Color(0.74, 0.72, 0.64))
+	for y in range(4, 12):
+		image.set_pixel(4, y, Color(0.42, 0.14, 0.14))
+		image.set_pixel(5, y, Color(0.42, 0.14, 0.14))
+	return ImageTexture.create_from_image(image)
 
 
 func _button_style(texture: Texture2D) -> StyleBoxTexture:

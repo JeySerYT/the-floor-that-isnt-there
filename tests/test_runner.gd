@@ -11,6 +11,8 @@ func _initialize() -> void:
 	test_save_round_trip()
 	test_missing_save()
 	test_v1_checkpoint_migration()
+	test_v2_objective_migration()
+	test_user_settings_round_trip()
 	test_manifest_assets_exist()
 	print("Results: %d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)
@@ -35,7 +37,7 @@ func test_new_game() -> void:
 	state.set_objective("test")
 	state.set_checkpoint(Vector2(100, 200))
 	state.reset_new_game()
-	assert_eq(state.objective, "Найти Леру. Осмотреть регистратуру.", "new_game_objective")
+	assert_eq(state.objective, "Подойти к стойке регистратуры и открыть журнал приёма.", "new_game_objective")
 	assert_eq(state.inventory.size(), 0, "new_game_inventory_empty")
 	assert_true(not state.has_flag("power_on"), "new_game_flags_cleared")
 	assert_eq(state.checkpoint, Vector2(160, 840), "new_game_checkpoint")
@@ -113,6 +115,49 @@ func test_v1_checkpoint_migration() -> void:
 	assert_eq(loaded.checkpoint, Vector2(160, 840), "v1_checkpoint_scaled")
 	assert_true(loaded.has_flag("power_on"), "v1_flags_kept")
 	loaded.delete_save(path)
+	loaded.free()
+
+
+func test_v2_objective_migration() -> void:
+	var path := "user://alpha_test_v2_save.json"
+	var legacy := {
+		"version": 2,
+		"flags": {"power_on": true, "key_taken": true},
+		"inventory": ["lift_key"],
+		"objective": "Проверить палату 13. Найти, кого здесь держат.",
+		"checkpoint": [700.0, 430.0],
+		"play_time": 20.0,
+		"ending": "",
+	}
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	assert_true(file != null, "v2_save_created")
+	if file == null:
+		return
+	file.store_string(JSON.stringify(legacy))
+	file.close()
+
+	var loaded: Node = _state_script.new()
+	assert_true(loaded.load_game(path), "v2_save_loaded")
+	assert_eq(loaded.objective, "Прочитать карту наблюдения в палате 13.", "v2_objective_rebuilt")
+	assert_eq(loaded.checkpoint, Vector2(700, 430), "v2_checkpoint_not_rescaled")
+	loaded.delete_save(path)
+	loaded.free()
+
+
+func test_user_settings_round_trip() -> void:
+	var path := "user://alpha_test_settings.json"
+	var script: Script = load("res://scripts/autoload/user_settings.gd")
+	var settings: Node = script.new()
+	settings.fullscreen = true
+	settings.master_volume = 0.35
+	assert_true(settings.save_settings(path), "settings_saved")
+	var loaded: Node = script.new()
+	loaded.load_settings(path)
+	assert_true(loaded.fullscreen, "settings_fullscreen_round_trip")
+	assert_eq(loaded.master_volume, 0.35, "settings_volume_round_trip")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	assert_true(not FileAccess.file_exists(path), "settings_deleted")
+	settings.free()
 	loaded.free()
 
 

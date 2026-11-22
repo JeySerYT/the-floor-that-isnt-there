@@ -24,7 +24,7 @@ var _focused_interaction: Interaction
 func _ready() -> void:
 	add_to_group("player")
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
-	z_index = 4
+	z_index = 0
 	_build_sprite()
 	_build_flashlight_texture()
 	camera.limit_left = 0

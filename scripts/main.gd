@@ -134,7 +134,7 @@ var _nearest: Interaction
 var _choice_context := ""
 var _note_is_intro := false
 var _save_timer := 0.0
-var _is_fullscreen := false
+var _input_lock := 0.0
 
 @onready var ui: GameUI = $UI/GameUI
 
@@ -156,6 +156,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_input_lock = maxf(_input_lock - delta, 0.0)
 	if state != "playing" or not is_instance_valid(player):
 		return
 	GameState.play_time += delta
@@ -166,13 +167,23 @@ func _process(delta: float) -> void:
 
 	_nearest = player.find_nearest_interaction()
 	ui.set_prompt(_nearest.prompt if _nearest != null else "")
-	if _nearest != null and Input.is_action_just_pressed("interact"):
+	if _input_lock <= 0.0 and _nearest != null and Input.is_action_just_pressed("interact"):
 		_interact(_nearest)
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.pressed and not key_event.echo and (key_event.keycode == KEY_F11 or key_event.physical_keycode == KEY_F11):
+			_toggle_fullscreen()
+			get_viewport().set_input_as_handled()
+			return
 	if event.is_action_pressed("fullscreen"):
 		_toggle_fullscreen()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("pause") and ui.is_settings_open():
+		ui.close_settings()
 		get_viewport().set_input_as_handled()
 		return
 	if state == "playing" and event.is_action_pressed("pause"):
@@ -236,6 +247,7 @@ func _begin_session() -> void:
 	player.global_position = GameState.checkpoint
 	world.set_player(player)
 	world.caught_player.connect(_on_player_caught)
+	ui.set_player(player)
 	ui.show_game()
 	ui.set_objective(GameState.objective)
 	ui.set_inventory(GameState.inventory)
@@ -250,6 +262,7 @@ func _cleanup_world() -> void:
 	world = null
 	player = null
 	_nearest = null
+	ui.set_player(null)
 
 
 func _show_note(title: String, body: String, is_intro: bool = false) -> void:
@@ -269,6 +282,7 @@ func _close_note() -> void:
 	ui.hide_note()
 	state = "playing"
 	get_tree().paused = false
+	_input_lock = 0.25
 	if _note_is_intro:
 		_note_is_intro = false
 		GameState.set_flag("intro_seen")
@@ -291,6 +305,7 @@ func _on_resume() -> void:
 	ui.hide_pause()
 	state = "playing"
 	get_tree().paused = false
+	_input_lock = 0.25
 
 
 func _on_return_to_menu() -> void:
@@ -318,9 +333,9 @@ func _interact(target: Interaction) -> void:
 			target.enabled = false
 			GameState.set_flag("reception_note_read")
 			if GameState.has_flag("fuse_taken"):
-				GameState.set_objective("Восстановить питание в щитовой.")
+				GameState.set_objective("Вставить предохранитель в электрощит в щитовой.")
 			else:
-				GameState.set_objective("Найти предохранитель. Проверить приёмное.")
+				GameState.set_objective("Взять предохранитель из картотеки в приёмном покое.")
 			ui.set_objective(GameState.objective)
 			_autosave()
 			_show_note("ЖУРНАЛ ПРИЁМА", RECEPTION_NOTE)
@@ -340,9 +355,9 @@ func _interact(target: Interaction) -> void:
 			target.enabled = false
 			GameState.set_flag("ward_chart_read")
 			if GameState.has_flag("key_taken"):
-				GameState.set_objective("Вернуться к стеклу или уйти на лифте.")
+				GameState.set_objective("Вернуться к смотровому стеклу в палате 13 или вызвать лифт.")
 			else:
-				GameState.set_objective("Найти ключ в морге или подойти к стеклу.")
+				GameState.set_objective("Найти служебный ключ в морге.")
 			ui.set_objective(GameState.objective)
 			_autosave()
 			_show_note("КАРТА НАБЛЮДЕНИЯ", WARD_NOTE)
@@ -357,7 +372,7 @@ func _collect_fuse(target: Interaction) -> void:
 		return
 	target.enabled = false
 	GameState.set_flag("fuse_taken")
-	GameState.set_objective("Восстановить питание в щитовой.")
+	GameState.set_objective("Вставить предохранитель в электрощит в щитовой.")
 	ui.set_inventory(GameState.inventory)
 	ui.set_objective(GameState.objective)
 	ui.show_toast("В инвентаре: предохранитель")
@@ -377,7 +392,7 @@ func _use_fusebox() -> void:
 	GameState.set_flag("power_on")
 	world.set_power_on()
 	ui.set_inventory(GameState.inventory)
-	GameState.set_objective("Найти ключ от служебного лифта. Проверить морг.")
+	GameState.set_objective("Найти служебный ключ в морге.")
 	ui.set_objective(GameState.objective)
 	AudioManager.play_sfx("power", -3.0)
 	AudioManager.play_sfx("stinger", -9.0, 0.02)
@@ -391,9 +406,9 @@ func _collect_key(target: Interaction) -> void:
 	target.enabled = false
 	GameState.set_flag("key_taken")
 	if GameState.has_flag("ward_chart_read"):
-		GameState.set_objective("Вернуться к стеклу или уйти на лифте.")
+		GameState.set_objective("Вернуться к смотровому стеклу в палате 13 или вызвать лифт.")
 	else:
-		GameState.set_objective("Проверить палату 13. Найти, кого здесь держат.")
+		GameState.set_objective("Прочитать карту наблюдения в палате 13.")
 	ui.set_inventory(GameState.inventory)
 	ui.set_objective(GameState.objective)
 	AudioManager.play_sfx("pickup", -6.0)
@@ -442,6 +457,7 @@ func _on_choice_selected(index: int) -> void:
 	_choice_context = ""
 	state = "playing"
 	get_tree().paused = false
+	_input_lock = 0.25
 	if index != 0:
 		return
 	if context == "window":
@@ -457,6 +473,7 @@ func _close_choice() -> void:
 	_choice_context = ""
 	state = "playing"
 	get_tree().paused = false
+	_input_lock = 0.25
 
 
 func _show_ending(ending_id: String) -> void:
@@ -514,6 +531,4 @@ func _autosave() -> void:
 
 
 func _toggle_fullscreen() -> void:
-	_is_fullscreen = not _is_fullscreen
-	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if _is_fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
-	DisplayServer.window_set_mode(mode)
+	UserSettings.toggle_fullscreen()
